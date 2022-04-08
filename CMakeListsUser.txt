@@ -1,0 +1,4 @@
+
+include_directories("${CMAKE_CURRENT_LIST_DIR}/lib/MHZ19_uart/")
+include_directories("${CMAKE_CURRENT_LIST_DIR}/lib/Adafruit_BME280/")
+include_directories("${CMAKE_CURRENT_LIST_DIR}/lib/RTClib/")
