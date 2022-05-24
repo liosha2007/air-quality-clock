@@ -2,10 +2,10 @@
 //#include <avr/power.h>
 
 #include "main.h"
+#include "DS3231.h"
 
 TripleLed led = TripleLed(LED_RED, LED_GREEN, LED_BLUE);
-
-Screen screen = Screen(LCD_BRIGHTNESS, PHOTO_RESISTOR); // Screen brightness and photo resistor
+Screen screen;
 
 GButton btn(BUTTON_FRONT, LOW_PULL); // Front button
 
@@ -13,163 +13,145 @@ GButton btnPrev(JOYSTICK_1, HIGH_PULL); // Joystick left
 GButton btnNext(JOYSTICK_2, HIGH_PULL); // Joystick right
 GButton btnSlct(JOYSTICK_3, HIGH_PULL); // Joystick center
 
-// region CO2
-#include <MHZ19_uart.h>
-MHZ19_uart mhz19;
-// endregion
+MHZ19 mhz(MHZ19B_TX, MHZ19B_RX);    // CO2
+BME280 bme;                         // Temperature, humidity and pressure
+DS3231 time;                     // Time
+MP503 mp = MP503(MP503_A, MP503_B); // Air quality
+CCS811 ccs;                         // Air quality
+Buttery buttery(PIN_BUTTERY_LEVEL);
 
-// region Temperature, humidity and pressure
-#include <Adafruit_BME280.h>
-#define SEALEVELPRESSURE_HPA (1013.25)
-Adafruit_BME280 bme;
-// endregion
+void drawDotOnScreen(uint8_t progress) {
+    screen.drawProgressDot();
+}
 
-// region Time
-#include <RTClib.h>
-RTC_DS3231 rtc;
-// TO UPDATE TIME, change to 1, push to Arduino, change back to 0 and repush
-#define RESET_CLOCK 0
-// endregion
-
-// region Air quality
-#include "MP503.h"
-MP503 mp503 = MP503(MP503_A, MP503_B);
-// endregion
-
-void setup() {
-//    clock_prescale_set(clock_div_16); // Change frequency
-
+__attribute__((unused)) void setup() {
     Serial.begin(9600);
 
-    // region Screen initialization
+    led.initialize();
+
     screen.initialize();
     screen.drawLogo();
-    // endregion
 
-    // region Buttons
     btn.setTickMode(MANUAL);
     btnPrev.setTickMode(MANUAL);
     btnNext.setTickMode(MANUAL);
     btnSlct.setTickMode(MANUAL);
-    // endregion
 
-    // region Beeper
     pinMode(BEEPER, OUTPUT);
-    // endregion
-
-    // region Led
-    led.initialize();
-    // endregion
 
     // region CO2 (MHZ-19)
     screen.drawProgress(LoadingProgress::STAGE_1);
-    uint8_t tryCount = 3;
-    do {
-        if (mhz19.getStatus() <= 0) {
-            mhz19.begin(MHZ19B_TX, MHZ19B_RX);
-            mhz19.setAutoCalibration(false);
-            screen.drawProgressOk();
-            break;
-        } else {
-            screen.drawProgressDot();
-        }
-        delay(500);
-        tryCount--;
-    } while (tryCount > 0);
-    if (tryCount == 0) {
+    delay(50);
+    if (mhz.initialize(3, drawDotOnScreen)) {
+        screen.drawProgressOk();
+    } else {
         screen.drawProgressFail();
+        delay(500);
     }
     // endregion
 
     // region Temperature, humidity and pressure (BME280)
     screen.drawProgress(LoadingProgress::STAGE_2);
     delay(50);
-    if (bme.begin(&Wire)) {
-        // Настройка BME280
-        bme.setSampling(Adafruit_BME280::MODE_FORCED,
-                        Adafruit_BME280::SAMPLING_X1, // Temperature
-                        Adafruit_BME280::SAMPLING_X1, // pressure
-                        Adafruit_BME280::SAMPLING_X1, // humidity
-                        Adafruit_BME280::FILTER_OFF);
+    if (bme.initialize(3, drawDotOnScreen)) {
         screen.drawProgressOk();
     } else {
         screen.drawProgressFail();
+        delay(500);
     }
-    // End
+    // endregion
 
     // region Time
     screen.drawProgress(LoadingProgress::STAGE_3);
-    if (RESET_CLOCK || rtc.lostPower()) {
-        RTC_DS3231::adjust(DateTime(F(__DATE__), F(__TIME__)));
+    delay(50);
+    if (time.initialize(3, drawDotOnScreen)) {
+        screen.drawProgressOk();
+    } else {
+        screen.drawProgressFail();
+        delay(500);
     }
-    screen.drawProgressOk();
     // endregion
 
     // region Air quality
     screen.drawProgress(LoadingProgress::STAGE_4);
-    mp503.initialize();
-    screen.drawProgressOk();
+    delay(50);
+    if (mp.initialize()) {
+        screen.drawProgressOk();
+    } else {
+        screen.drawProgressFail();
+        delay(500);
+    }
     // endregion
 
+    // region CCS-811 Air quality
+    screen.drawProgress(LoadingProgress::STAGE_5);
+    delay(50);
+    if (ccs.initialize(3, drawDotOnScreen)) {
+        screen.drawProgressOk();
+    } else {
+        screen.drawProgressFail();
+        delay(500);
+    }
+    // endregion
 
     delay(500);
     screen.cleanScreen();
+
+    tone(BEEPER, 3000, 500);
 }
 
-void loop() {
+__attribute__((unused)) void loop() {
 
-    // Battery
-//    int value = analogRead(A7);
-//    Serial.print("value = ");
-//    Serial.println(map(value, 500, 680, 0, 5));
-//    delay(500);
+    uint32_t timeInMillis = millis();
 
+////    tone(BEEPER, 1000, 2000);
 
+    int butteryValue = buttery.readLevel(timeInMillis);
+    screen.drawButtery(butteryValue, BUTTERY_MIN, BUTTERY_MAX);
 
-// Mp503
-//    delay(3000);
-//    uint8_t pollution = mp503.readPollution();
+    DateTime dateTime = time.readDateTime(timeInMillis);
+    String dateString = DS3231::formatDateAsString(dateTime);
+    String timeString = DS3231::formatTimeAsString(dateTime);
+    screen.drawDate(dateString);
+    screen.drawTime(timeString);
+
+//    uint8_t pollutionValue = mp.readPollution(timeInMillis);
 //
-//    if (pollution == MP503::HEAVY_POLLUTION_AIR) {
-//        Serial.println("High pollution! Force signal active.");
-//    } else if (pollution == MP503::MIDDLE_POLLUTION_AIR) {
-//        Serial.println("High pollution!");
-//    } else if (pollution == MP503::SLIGHT_POLLUTION_AIR) {
-//        Serial.println("Low pollution!");
-//    } else if (pollution == MP503::CLEAN_AIR) {
-//        Serial.println("Fresh air.");
+//    if (pollutionValue == MP503::HEAVY_POLLUTION_AIR) {
+////        Serial.println("High pollutionValue! Force signal active.");
+//    } else if (pollutionValue == MP503::MIDDLE_POLLUTION_AIR) {
+////        Serial.println("High pollutionValue!");
+//    } else if (pollutionValue == MP503::SLIGHT_POLLUTION_AIR) {
+////        Serial.println("Low pollutionValue!");
+//    } else if (pollutionValue == MP503::CLEAN_AIR) {
+////        Serial.println("Fresh air.");
 //    }
 
+    // BME280
+    float tempValue = bme.readTemperature(timeInMillis);
+    uint8_t humidityValue = bme.readHumidity(timeInMillis);
+    uint16_t pressureValue = bme.readPressure(timeInMillis);
 
-//    // BME
-    bme.takeForcedMeasurement();
-    float dispTemp = bme.readTemperature();   // Температура
-//    float dispHum = bme.readHumidity();       // Влажность
-//    float dispPres = bme.readPressure() * 0.00750062f; // Давление
-    int dispCO2 = mhz19.getPPM();           // CO2
+    screen.drawTemperature(tempValue);
+    screen.drawHumanity(humidityValue);
+    screen.drawPressure(pressureValue);
 
-    Serial.print("  dispTemp = ");
-    Serial.print(roundTemperatureQuality(dispTemp));
-//
-//    Serial.print("  dispHum = ");
-//    Serial.print(roundHumanityQuality(dispHum));
-//
-//    Serial.print("  dispPres = ");
-//    Serial.print(roundPressureQuality(dispPres));
-//
-    Serial.print("  dispCO2 = ");
-    Serial.println(dispCO2);
+    int16_t co2Value = mhz.readCo2(timeInMillis);
+    screen.drawCO2(co2Value);
+
+//    uint16_t ccsCO2 = ccs.readCo2(timeInMillis);
+    uint16_t ccsTVOC = ccs.readTvoc(timeInMillis); // <0.3 | 0.3-1 | 1-3 | 3-10 | 10-25
+    screen.drawTVOC(ccsTVOC);
+
+
+
+//    /*!
+//     * @brief Set baseline
+//     * @param get from getBaseline.ino
+//     */
+//    ccs.writeBaseLine(0x847B);
+//    //delay cannot be less than measurement cycle
+//    //delay(1000);
 //    delay(1000);
-
-
-
-
-// MHZ-19
-    int mhzCO2 = mhz19.getPPM();
-    Serial.print("  mhzCO2  = ");
-    Serial.print(mhzCO2);
-    int mhzTemp = mhz19.getTemperature();
-    Serial.print("  mhzTemp  = ");
-    Serial.println(mhzTemp);
-    delay(1000);
+//    Serial.println("");
 }

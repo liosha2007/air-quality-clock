@@ -69,7 +69,7 @@ void TripleLed::blinkRed(uint16_t delayMs) const {
     analogWrite(redPin, 0);
 }
 
-void TripleLed::blinkGreen(uint16_t delayMs) const{
+void TripleLed::blinkGreen(uint16_t delayMs) const {
     analogWrite(redPin, 0);
     analogWrite(greenPin, 255);
     analogWrite(bluePin, 0);
@@ -77,7 +77,7 @@ void TripleLed::blinkGreen(uint16_t delayMs) const{
     analogWrite(greenPin, 0);
 }
 
-void TripleLed::blinkBlue(uint16_t delayMs) const{
+void TripleLed::blinkBlue(uint16_t delayMs) const {
     analogWrite(redPin, 0);
     analogWrite(greenPin, 0);
     analogWrite(bluePin, 255);

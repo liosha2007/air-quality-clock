@@ -7,12 +7,6 @@
 
 #include <Arduino.h>
 
-uint16_t roundPressureQuality(float);
-
-uint8_t roundHumanityQuality(float);
-
-float roundTemperatureQuality(float);
-
 typedef enum {
     GOOD = (1),
     NORMAL = (2),
@@ -23,7 +17,7 @@ typedef enum {
 
 Quality detectCo2Quality(int16_t);
 
-Quality detectPressureQuality(int16_t);
+Quality detectPressureQuality(uint16_t);
 
 Quality detectHumanityQuality(uint8_t);
 

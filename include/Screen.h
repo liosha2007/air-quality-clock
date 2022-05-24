@@ -16,17 +16,14 @@ typedef enum {
     STAGE_1 = (1),
     STAGE_2 = (2),
     STAGE_3 = (3),
-    STAGE_4 = (4)
+    STAGE_4 = (4),
+    STAGE_5 = (5)
 } LoadingProgress;
 
 class Screen {
 public:
-    /**
-     * Creates Screen object
-     * @param screenBrightnessPin pin, which is connected to BLK (brightness) on screen
-     * @param photoResistorPin pin, which is connected to to the middle point of photo resistor and changeable resistor
-     */
-    Screen(uint8_t screenBrightnessPin, uint8_t photoResistorPin);
+
+    Screen();
 
     /**
      * Initializes screen
@@ -45,13 +42,17 @@ public:
 
     void cleanScreen();
 
-    void drawDate(String);
+    void drawButtery(uint16_t, uint16_t, uint16_t);
 
-    void drawTime(String);
+    void drawDate(String&);
+
+    void drawTime(String&);
+
+    void drawPollution(String&);
 
     void drawCO2(int16_t);
 
-    void drawPressure(int16_t);
+    void drawPressure(uint16_t);
 
     void drawHumanity(uint8_t);
 
@@ -59,7 +60,7 @@ public:
 
     void toggle();
 
-    void updateScreenBrightness();
+    void drawTVOC(uint16_t);
 
 private:
     TFT_ST7735 tft;
@@ -69,49 +70,58 @@ private:
     static const uint8_t TEXT_SIZE_NORMAL = 2;
     static const uint8_t TEXT_SIZE_BIG = 3;
 
-    static const uint8_t DATE_X = 6;
-    static const uint8_t DATE_Y = 11;
+    static const uint8_t BUTTERY_X = 1;
+    static const uint8_t BUTTERY_Y = 1;
+    static const uint8_t BUTTERY_W = 160;
+    static const uint8_t BUTTERY_H = 3;
+
+    static const uint8_t DATE_X = 20;
+    static const uint8_t DATE_Y = 7;
     static const uint8_t DATE_W = 116;
     static const uint8_t DATE_H = 14;
 
-    static const uint8_t TIME_X = 23;
-    static const uint8_t TIME_Y = 42;
+    static const uint8_t TIME_X = 35;
+    static const uint8_t TIME_Y = 28;
     static const uint8_t TIME_W = 87;
     static const uint8_t TIME_H = 21;
 
-    static const uint8_t CO2_X_WIDE = 16;
-    static const uint8_t CO2_X_THIN = 24;
-    static const uint8_t CO2_Y = 75;
-    static const uint8_t CO2_W = 94;
-    static const uint8_t CO2_H = 14;
-
-    static const uint8_t PRES_X = 24;
-    static const uint8_t PRES_Y = 96;
-    static const uint8_t PRES_W = 94;
-    static const uint8_t PRES_H = 14;
-
-    static const uint8_t HUM_X = 29;
-    static const uint8_t HUM_Y = 117;
-    static const uint8_t HUM_W = 94;
-    static const uint8_t HUM_H = 14;
-
-    static const uint8_t TEMP_X = 20;
-    static const uint8_t TEMP_Y = 138;
+    static const uint8_t TEMP_X = 2;
+    static const uint8_t TEMP_Y = 60;
     static const uint8_t TEMP_W = 94;
     static const uint8_t TEMP_H = 14;
 
-    uint8_t screenPin;
-    uint8_t photoPin;
+    static const uint8_t TVOC_X = 2;
+    static const uint8_t TVOC_Y = 85;
+    static const uint8_t TVOC_W = 94;
+    static const uint8_t TVOC_H = 14;
+
+    static const uint8_t PRES_X = 2;
+    static const uint8_t PRES_Y = 110;
+    static const uint8_t PRES_W = 94;
+    static const uint8_t PRES_H = 14;
+
+    static const uint8_t CO2_X_WIDE = 80;
+    static const uint8_t CO2_X_THIN = 88;
+    static const uint8_t CO2_Y = 85;
+    static const uint8_t CO2_W = 94;
+    static const uint8_t CO2_H = 14;
+
+    static const uint8_t HUM_X = 100;
+    static const uint8_t HUM_Y = 110;
+    static const uint8_t HUM_W = 94;
+    static const uint8_t HUM_H = 14;
+
     uint8_t screenEnabled;
     uint8_t currentY = 3;
+    uint8_t currentButtery = 0;
     String lastDate = "";
     String lastTime = "";
+    String lastPollution = "";
     int16_t lastCo2 = 0;
-    int16_t lastPres = 0;
+    uint16_t lastPres = 0;
     uint8_t lastHum = 0;
+    uint16_t lastTvoc = 0;
     float lastTemp = 0;
-    uint16_t lastResistor = 0;
-    uint16_t brightnessHistory[5] = {0, 0, 0, 0, 0};
 
     uint16_t getColorForQuality(Quality quality);
 };

@@ -8,7 +8,7 @@
 // SEN-CCS811 Air 1.8-3.6v (30mA)
 
 // 1.8 128x160 rgb tft lcd 3.3v
-#define LCD_BRIGHTNESS A6 // PWM???
+
 // SCK is fixed - D13
 // SDA is fixed - D11
 // CS  is defined in User_Setup.h, default is A2
@@ -28,8 +28,7 @@
 #define MHZ19B_RX 4
 
 #define BUTTON_FRONT A3
-#define PHOTO_RESISTOR A0
-#define BEEPER 1
+#define BEEPER A0
 
 #define JOYSTICK_1 12
 #define JOYSTICK_2 2
@@ -38,5 +37,7 @@
 #define LED_RED 10
 #define LED_GREEN 9
 #define LED_BLUE 5
+
+#define PIN_BUTTERY_LEVEL A7
 
 #endif //AIR_QUALITY_CLOCK_CONSTANTS_H

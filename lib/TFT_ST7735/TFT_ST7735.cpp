@@ -1557,8 +1557,8 @@ void TFT_ST7735::setRotation(uint8_t m)
        writedata(MADCTL_MX | MADCTL_MV | MADCTL_RGB);
      } else if(tabcolor == INITR_GREENTAB2) {
        writedata(MADCTL_MX | MADCTL_MV | MADCTL_RGB);
-       colstart = 1;
-       rowstart = 2;
+       colstart = 0;
+       rowstart = 0;
      } else {
        writedata(MADCTL_MX | MADCTL_MV | MADCTL_BGR);
      }

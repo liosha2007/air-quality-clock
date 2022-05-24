@@ -1,17 +1,5 @@
 #include "Utils.h"
 
-uint16_t roundPressureQuality(float value) {
-    return (uint16_t) value;
-}
-
-uint8_t roundHumanityQuality(float value) {
-    return (uint8_t) value;
-}
-
-float roundTemperatureQuality(float value) {
-    return (((float)((uint8_t)(value * 10))) / 10);
-}
-
 Quality detectCo2Quality(int16_t value) {
     if (value <= 400) {
         return Quality::GOOD;
@@ -26,7 +14,7 @@ Quality detectCo2Quality(int16_t value) {
     }
 }
 
-Quality detectPressureQuality(int16_t value) {
+Quality detectPressureQuality(uint16_t value) {
     // 0m over sea 641 - 760 - 816
     // ZP - 86m over sea, 649 - 768 - 824
     if (value >= 609 && value < 679) {

@@ -41,6 +41,7 @@ public:
     uint8_t hour() const        { return hh; }
     uint8_t minute() const      { return mm; }
     uint8_t second() const      { return ss; }
+    void setSecond(uint8_t value)      { ss = value; }
     uint8_t dayOfTheWeek() const;
 
     // 32-bit times as seconds since 1/1/2000
