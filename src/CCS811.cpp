@@ -15,11 +15,13 @@ bool CCS811::initialize(uint8_t triesCount, void (&callback)(uint8_t)) {
     while (tryNumber < triesCount) {
         if (_ccs.begin() == ERR_OK) {
             // Configure interrupt thresholds
-            _ccs.setMeasCycle(_ccs.eCycle_10s);
+            _ccs.setMeasCycle(_ccs.eCycle_60s);
+            _ccs.setMeasurementMode(0, 0, _ccs.eMode3);
             return true;
         }
         callback(tryNumber);
         tryNumber++;
+        delay(10);
     }
     return false;
 }
@@ -50,6 +52,16 @@ void CCS811::updateValues() {
         _co2 = _ccs.getCO2PPM();
         _tvoc = _ccs.getTVOCPPB();
     } else {
-        Serial.print("co2 data is not ready, not updated");
+        Serial.println("CCS811 sensor is not ready\n\tsetting co2 or tvoc initial data as 1000");
+    }
+    if (_co2 == 0) {
+        // The sensor gives first measurements only after few minutes
+        // Update initial value to avoid spamming and request to sensor each loop iteration
+        _co2 = 1000;
+    }
+    if (_tvoc == 0) {
+        // The sensor gives first measurements only after few minutes
+        // Update initial value to avoid spamming into serial and request to sensor each loop iteration
+        _tvoc = 1000;
     }
 }

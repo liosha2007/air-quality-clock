@@ -15,7 +15,7 @@ uint8_t Buttery::readLevel(uint32_t currentMillis) {
         long value = analogRead(_pin);
         _level = map(value, BUTTERY_MIN_RAW, BUTTERY_MAX_RAW, BUTTERY_MIN, BUTTERY_MAX);
 
-        Serial.print("New buttery value (0-5) = ");
+        Serial.print("New buttery value (0-160) = ");
         Serial.println(_level);
     }
     return _level;

@@ -17,6 +17,7 @@ bool DS3231::initialize(uint8_t triesCount, void (&callback)(uint8_t)) {
         }
         callback(tryNumber);
         tryNumber++;
+        delay(10);
     }
     return false;
 }
@@ -29,8 +30,9 @@ DateTime DS3231::readDateTime(uint32_t currentMillis) {
         Serial.print(formatDateAsString(*_dateTime));
         Serial.print(", time value = ");
         Serial.println(formatTimeAsString(*_dateTime));
-    } else if ((currentMillis % 998) == 0) {
-        _dateTime->setSecond(_dateTime->second() + 1); // Will be synchronized each UPDATE_DS3231 ms
+    } else if ((currentMillis % 50) == 0) {
+        uint16_t millis = _dateTime->millis() + 50;
+        _dateTime->setMillis(millis % 1000); // Will be reset to 0 each UPDATE_DS3231 ms
     }
     return *_dateTime;
 }
@@ -78,14 +80,14 @@ String DS3231::formatTimeAsString(DateTime &dateTime) {
     String time = "";
     uint8_t hrs = dateTime.hour();
     uint8_t mins = dateTime.minute();
-    uint8_t secs = dateTime.second();
+    uint16_t millis = dateTime.millis();
     if (hrs / 10 == 0) {
         time = "0";
     } else {
         time += String(hrs / 10);
     }
     time += String(hrs % 10);
-    if (secs % 2 == 0) {
+    if (millis > 0 && millis < 500) {
         time += ":";
     } else {
         time += " ";

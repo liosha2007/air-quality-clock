@@ -20,7 +20,7 @@
 
 #include <Arduino.h>
 
-#define UPDATE_MP503 60000
+#define UPDATE_MP503 100000
 
 class MP503 {
 public:

@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <MHZ19_uart.h>
 
-#define UPDATE_MHZ19 60000
+#define UPDATE_MHZ19 110000
 
 class MHZ19 {
 public:

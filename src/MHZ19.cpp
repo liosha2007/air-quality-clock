@@ -20,6 +20,7 @@ bool MHZ19::initialize(uint8_t triesCount, void (&callback)(uint8_t)) {
         }
         callback(tryNumber);
         tryNumber++;
+        delay(10);
     }
     return false;
 }

@@ -115,7 +115,8 @@ DateTime::DateTime (const DateTime& copy):
   d(copy.d),
   hh(copy.hh),
   mm(copy.mm),
-  ss(copy.ss)
+  ss(copy.ss),
+  ms(copy.ms)
 {}
 
 static uint8_t conv2d(const char* p) {

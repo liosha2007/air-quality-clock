@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-#define UPDATE_BUTTERY 60000
+#define UPDATE_BUTTERY 75000
 #define BUTTERY_MIN 1
 #define BUTTERY_MAX 160
 #define BUTTERY_MIN_RAW 500

@@ -7,7 +7,7 @@
 
 #include <Keyestudio_CCS811.h>
 
-#define UPDATE_CCS811 60000
+#define UPDATE_CCS811 90000
 
 class CCS811 {
 public:
