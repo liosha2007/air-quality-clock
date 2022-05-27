@@ -8,11 +8,11 @@
 
 #include <stdint.h>
 
-#define UPDATE_BUTTERY 75000
+#define UPDATE_BUTTERY 15000
 #define BUTTERY_MIN 1
 #define BUTTERY_MAX 160
-#define BUTTERY_MIN_RAW 500
-#define BUTTERY_MAX_RAW 1000
+#define BUTTERY_MIN_RAW 1
+#define BUTTERY_MAX_RAW 250
 
 class Buttery {
 public:
@@ -21,11 +21,15 @@ public:
      */
     explicit Buttery(uint8_t);
 
+    void initialize() const;
+
     uint8_t readLevel(uint32_t currentMillis);
 
 private:
     uint8_t _pin;
-    uint8_t _level;
+    int16_t _level;
+
+    static uint8_t displayableLevel(int16_t level);
 };
 
 

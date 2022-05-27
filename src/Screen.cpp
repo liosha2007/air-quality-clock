@@ -4,6 +4,8 @@
 
 
 #include "Screen.h"
+#include "RTClib.h"
+#include "DS3231.h"
 
 Screen::Screen() {
     screenEnabled = true;
@@ -95,122 +97,192 @@ void Screen::drawButtery(uint16_t value, uint16_t min, uint16_t max) {
     }
 }
 
-void Screen::drawDate(String &value) {
-    if (lastDate != value) {
-        lastDate = value;
+void Screen::drawDateTime(DateTime & value) {
+    // Date
+    if (lastDateTime.day() != value.day() || lastDateTime.month() != value.month() || lastDateTime.year() != value.year()) {
         tft.fillRect(DATE_X, DATE_Y, DATE_W, DATE_H, ST7735_BLACK);
 
         tft.setCursor(DATE_X, DATE_Y);
-        tft.setTextColor(ST7735_WHITE);
         tft.setTextSize(TEXT_SIZE_NORMAL);
-        tft.println(value);
+        tft.setTextColor(ST7735_WHITE);
+
+        String dateString = DS3231::formatDateAsString(value);
+        tft.println(dateString);
     }
-}
+    // Time
+    if (lastDateTime.hour() != value.hour() || lastDateTime.minute() != value.minute()) {
+        tft.fillRect(TIME_HOURS_X, TIME_Y, TIME_HOURS_W, TIME_H, ST7735_BLACK);
+        tft.fillRect(TIME_MINUTES_X, TIME_Y, TIME_MINUTES_W, TIME_H, ST7735_BLACK);
 
-void Screen::drawTime(String &value) {
-    tft.setTextColor(ST7735_WHITE);
-    tft.setTextSize(TEXT_SIZE_BIG);
-    if (lastTime.substring(0, 2) != value.substring(0, 2) || lastTime.substring(3, 5) != value.substring(3, 5)) {
-        tft.fillRect(TIME_X, TIME_Y, TIME_W, TIME_H, ST7735_BLACK);
+        tft.setTextSize(TEXT_SIZE_BIG);
+        tft.setTextColor(ST7735_WHITE);
 
-        tft.setCursor(TIME_X, TIME_Y);
-        tft.println(value);
-    } else {
-        tft.setCursor(TIME_X + 36, TIME_Y);
-        if (value.indexOf(":") == -1) {
-            tft.fillRect(TIME_X + 42, TIME_Y, 3, TIME_H, ST7735_BLACK);
+        String hours = "";
+        uint8_t hrs = value.hour();
+        hours += String(hrs / 10);
+        hours += String(hrs % 10);
+
+        tft.setCursor(TIME_HOURS_X, TIME_Y);
+        tft.print(hours);
+
+        String minutes = "";
+        uint8_t mins = value.minute();
+        if (mins < 10) {
+            minutes += "0";
+            minutes += String(mins);
         } else {
-            tft.print(":");
+            minutes += String(mins / 10);
         }
+
+        tft.setCursor(TIME_MINUTES_X, TIME_Y);
+        tft.print(mins);
     }
-    lastTime = value;
+
+    uint16_t millis = value.millis();
+    bool dateTimeSeparator;
+    if (millis >= 0 && millis < 500) {
+        dateTimeSeparator = false;
+    } else {
+        dateTimeSeparator = true;
+    }
+
+    if (lastDateTimeSeparator != dateTimeSeparator) {
+        tft.fillRect(TIME_SEPARATOR_X, TIME_Y, TIME_SEPARATOR_W, TIME_H, ST7735_BLACK);
+
+        if (dateTimeSeparator) {
+            tft.setCursor(TIME_SEPARATOR_X, TIME_Y);
+            tft.setTextSize(TEXT_SIZE_BIG);
+            tft.setTextColor(ST7735_WHITE);
+            tft.print(String(":"));
+        }
+        lastDateTimeSeparator = dateTimeSeparator;
+    }
+
+    lastDateTime = value;
 }
 
-void Screen::drawPollution(String &value) {
+void Screen::drawPollution(uint8_t value, uint8_t maximum) {
     if (lastPollution != value) {
         lastPollution = value;
-//        tft.fillRect(CO2_X_WIDE, CO2_Y, CO2_W, CO2_H, ST7735_BLACK);
-//
-//        if (value < 1000) {
-//            tft.setCursor(CO2_X_THIN, CO2_Y);
-//        } else {
-//            tft.setCursor(CO2_X_WIDE, CO2_Y);
-//        }
-//
-//        Quality quality = detectCo2Quality(value);
-//        uint16_t color = getColorForQuality(quality);
-//
-//        tft.setTextColor(color);
-//        tft.setTextSize(TEXT_SIZE_NORMAL);
-//        tft.println("CO2:" + String(value));
+
+        tft.fillRect(POLLUTION_X, POLLUTION_Y, POLLUTION_W, POLLUTION_H, ST7735_BLACK);
+        tft.drawRect(POLLUTION_X, POLLUTION_Y, POLLUTION_W, POLLUTION_H, ST7735_WHITE);
+
+        uint16_t color;
+        uint16_t mapValue;
+        if (maximum / value == maximum / 1) {
+            color = ST7735_GREEN;
+            mapValue = 1;
+        } else if (maximum / value == maximum / 2) {
+            color = ST7735_YELLOW;
+            mapValue = 2;
+        } else if (maximum / value == maximum / 4) {
+            color = ST7735_ORANGE;
+            mapValue = 3;
+        } else { // maximum / 8
+            color = ST7735_RED;
+            mapValue = 4;
+        }
+
+        tft.setCursor(POLLUTION_X + 3, POLLUTION_Y - 10);
+        tft.setTextColor(color);
+        tft.setTextSize(1);
+        tft.setTextFont(1);
+        tft.print(String("pollution"));
+
+        uint8_t width = map(mapValue, 1, 4, POLLUTION_W / 4, POLLUTION_W - 2);
+        tft.fillRect(POLLUTION_X + 1, POLLUTION_Y + 1, width, POLLUTION_H - 2, color);
     }
 }
 
 void Screen::drawCO2(int16_t value) {
     if (lastCo2 != value) {
         lastCo2 = value;
-        tft.fillRect(CO2_X_WIDE, CO2_Y, CO2_W, CO2_H, ST7735_BLACK);
-
-        if (value < 1000) {
-            tft.setCursor(CO2_X_THIN, CO2_Y);
-        } else {
-            tft.setCursor(CO2_X_WIDE, CO2_Y);
-        }
+        tft.fillRect(CO2_X + 20, CO2_Y, CO2_W, CO2_H, ST7735_BLACK);
+        tft.setCursor(CO2_X + 20, CO2_Y);
 
         Quality quality = detectCo2Quality(value);
         uint16_t color = getColorForQuality(quality);
 
         tft.setTextColor(color);
         tft.setTextSize(TEXT_SIZE_NORMAL);
-        tft.println("C:" + String(value));
+        tft.print(String(value));
+
+        tft.setCursor(CO2_X, CO2_Y);
+        tft.setTextSize(TEXT_SIZE_SMALL);
+        tft.print(String("co2"));
     }
 }
 
 void Screen::drawPressure(uint16_t value) {
     if (lastPres != value) {
         lastPres = value;
-        tft.fillRect(PRES_X, PRES_Y, PRES_W, PRES_H, ST7735_BLACK);
+        tft.fillRect(PRES_X + 20, PRES_Y, PRES_W, PRES_H, ST7735_BLACK);
 
-        tft.setCursor(PRES_X, PRES_Y);
+        tft.setCursor(PRES_X + 20, PRES_Y);
 
         Quality quality = detectPressureQuality(value);
         uint16_t color = getColorForQuality(quality);
 
         tft.setTextColor(color);
         tft.setTextSize(TEXT_SIZE_NORMAL);
-        tft.println("P:" + String(value));
+        tft.print(String(value));
+
+        tft.setCursor(PRES_X, PRES_Y);
+        tft.setTextSize(TEXT_SIZE_SMALL);
+        tft.print(String("prs"));
     }
 }
 
-void Screen::drawHumanity(uint8_t value) {
+void Screen::drawHumidity(uint8_t value) {
     if (lastHum != value) {
         lastHum = value;
+
         tft.fillRect(HUM_X, HUM_Y, HUM_W, HUM_H, ST7735_BLACK);
+        tft.drawRect(HUM_X, HUM_Y, HUM_W, HUM_H, ST7735_WHITE);
 
-        tft.setCursor(HUM_X, HUM_Y);
+        uint16_t color;
+        // 40-60 is ok, 25-40 and 60-75 so so
+        if (value >= 25 && value < 40) {
+            color = ST7735_YELLOW;
+        } else if (value >= 40 && value <= 60) {
+            color = ST7735_GREEN;
+        } else if (value >= 60 && value < 75) {
+            color = ST7735_YELLOW;
+        } else if (value >= 75 && value < 90) {
+            color = ST7735_ORANGE;
+        } else {
+            color = ST7735_RED;
+        }
 
-        Quality quality = detectHumanityQuality(value);
-        uint16_t color = getColorForQuality(quality);
-
+        tft.setCursor(HUM_X + 3, HUM_Y - 10);
         tft.setTextColor(color);
-        tft.setTextSize(TEXT_SIZE_NORMAL);
-        tft.println("H:" + String(value) + "%");
+        tft.setTextSize(TEXT_SIZE_SMALL);
+        tft.setTextFont(1);
+        tft.print(String("humidity"));
+
+        uint8_t width = map(value, 1, 100, HUM_W / 4, HUM_W - 2);
+        tft.fillRect(HUM_X + 1, HUM_Y + 1, width, HUM_H - 2, color);
     }
 }
 
 void Screen::drawTemperature(float value) {
     if (lastTemp != value) {
         lastTemp = value;
-        tft.fillRect(TEMP_X, TEMP_Y, TEMP_W, TEMP_H, ST7735_BLACK);
+        tft.fillRect(TEMP_X + 20, TEMP_Y, TEMP_W, TEMP_H, ST7735_BLACK);
 
-        tft.setCursor(TEMP_X, TEMP_Y);
+        tft.setCursor(TEMP_X + 20, TEMP_Y);
 
         Quality quality = detectTemperatureQuality(value);
         uint16_t color = getColorForQuality(quality);
 
         tft.setTextColor(color);
         tft.setTextSize(TEXT_SIZE_NORMAL);
-        tft.println("T:" + String(value, 1));
+        tft.print(String(value, 1));
+
+        tft.setCursor(TEMP_X, TEMP_Y);
+        tft.setTextSize(TEXT_SIZE_SMALL);
+        tft.print(String("tmp"));
     }
 }
 
@@ -233,16 +305,20 @@ uint16_t Screen::getColorForQuality(Quality quality) {
 void Screen::drawTVOC(uint16_t value) {
     if (lastTvoc != value) {
         lastTvoc = value;
-        tft.fillRect(TVOC_X, TVOC_Y, TVOC_W, TVOC_H, ST7735_BLACK);
+        tft.fillRect(TVOC_X + 20, TVOC_Y, TVOC_W, TVOC_H, ST7735_BLACK);
 
-        tft.setCursor(TVOC_X, TVOC_Y);
+        tft.setCursor(TVOC_X + 20, TVOC_Y);
 
-//        Quality quality = detectHumanityQuality(value);
+//        Quality quality = detectHumidityQuality(value);
 //        uint16_t color = getColorForQuality(quality);
 //
 //        tft.setTextColor(color);
         tft.setTextSize(TEXT_SIZE_NORMAL);
-        tft.println("V:" + String(value));
+        tft.print(String(value));
+
+        tft.setCursor(TVOC_X, TVOC_Y);
+        tft.setTextSize(TEXT_SIZE_SMALL);
+        tft.print(String("tvc"));
     }
 
 }

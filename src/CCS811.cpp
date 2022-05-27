@@ -30,7 +30,7 @@ uint16_t CCS811::readCo2(uint32_t currentMillis) {
     if ((currentMillis % UPDATE_CCS811) == 0 || _co2 == 0 /* Initial load */) {
         updateValues();
 
-        Serial.print("New co2 value = ");
+        Serial.print("CCS811 co2 = ");
         Serial.println(_co2);
     }
     return _co2;
@@ -41,7 +41,7 @@ uint16_t CCS811::readTvoc(uint32_t currentMillis) {
     if ((currentMillis % UPDATE_CCS811) == 0 || _tvoc == 0 /* Initial load */) {
         updateValues();
 
-        Serial.print("New tvoc value = ");
+        Serial.print("CCS811 tvoc = ");
         Serial.println(_tvoc);
     }
     return _tvoc;

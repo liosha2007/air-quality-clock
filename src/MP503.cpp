@@ -18,7 +18,7 @@ bool MP503::initialize() const {
 }
 
 uint8_t MP503::readPollution(uint32_t currentMillis) {
-    if (currentMillis % UPDATE_MP503 || _pollution == 0 /* Initial load */) {
+    if (currentMillis % UPDATE_MP503 == 0 || _pollution == 0 /* Initial load */) {
         int valA = digitalRead(_pinA);
         int valB = digitalRead(_pinB);
 
@@ -34,7 +34,7 @@ uint8_t MP503::readPollution(uint32_t currentMillis) {
             _pollution = ERROR;
         }
 
-        Serial.print("New pollution value (1-4) = ");
+        Serial.print("MP503: pollution (1-4) = ");
         Serial.println(_pollution);
     }
     return _pollution;

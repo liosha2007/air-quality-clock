@@ -107,6 +107,7 @@ DateTime::DateTime (uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uin
     hh = hour;
     mm = min;
     ss = sec;
+    ms = 0;
 }
 
 DateTime::DateTime (const DateTime& copy):

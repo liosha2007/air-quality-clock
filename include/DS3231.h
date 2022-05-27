@@ -7,7 +7,7 @@
 
 #include <RTClib.h>
 
-#define UPDATE_DS3231 59000
+#define UPDATE_DS3231 60000
 
 class DS3231 {
 public:

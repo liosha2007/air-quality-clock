@@ -19,7 +19,7 @@ Quality detectCo2Quality(int16_t);
 
 Quality detectPressureQuality(uint16_t);
 
-Quality detectHumanityQuality(uint8_t);
+Quality detectHumidityQuality(uint8_t);
 
 Quality detectTemperatureQuality(float);
 

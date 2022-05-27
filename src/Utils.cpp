@@ -36,7 +36,7 @@ Quality detectPressureQuality(uint16_t value) {
     }
 }
 
-Quality detectHumanityQuality(uint8_t value) {
+Quality detectHumidityQuality(uint8_t value) {
     // 40-60 is ok, 25-40 and 60-75 so so
     if (value >= 10 && value < 25) {
         return Quality::BAD;

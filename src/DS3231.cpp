@@ -26,12 +26,12 @@ DateTime DS3231::readDateTime(uint32_t currentMillis) {
     if ((currentMillis % UPDATE_DS3231) == 0 || _dateTime == nullptr /* Initial load */) {
         updateValues();
 
-        Serial.print("New date value = ");
+        Serial.print("DS3231: date = ");
         Serial.print(formatDateAsString(*_dateTime));
-        Serial.print(", time value = ");
+        Serial.print(",\n\ttime value = ");
         Serial.println(formatTimeAsString(*_dateTime));
-    } else if ((currentMillis % 50) == 0) {
-        uint16_t millis = _dateTime->millis() + 50;
+    } else if ((currentMillis % 500) == 0) {
+        uint16_t millis = _dateTime->millis() + 500;
         _dateTime->setMillis(millis % 1000); // Will be reset to 0 each UPDATE_DS3231 ms
     }
     return *_dateTime;
@@ -80,18 +80,13 @@ String DS3231::formatTimeAsString(DateTime &dateTime) {
     String time = "";
     uint8_t hrs = dateTime.hour();
     uint8_t mins = dateTime.minute();
-    uint16_t millis = dateTime.millis();
     if (hrs / 10 == 0) {
         time = "0";
     } else {
         time += String(hrs / 10);
     }
     time += String(hrs % 10);
-    if (millis > 0 && millis < 500) {
-        time += ":";
-    } else {
-        time += " ";
-    }
+    time += ":";
     time += String(mins / 10);
     time += String(mins % 10);
     // time += ":";

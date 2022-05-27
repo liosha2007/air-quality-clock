@@ -39,7 +39,7 @@ private:
 
     static uint16_t roundPressureQuality(float);
 
-    static uint8_t roundHumanityQuality(float);
+    static uint8_t roundHumidityQuality(float);
 
     static float roundTemperatureQuality(float);
 

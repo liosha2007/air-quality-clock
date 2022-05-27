@@ -29,7 +29,7 @@ int16_t MHZ19::readCo2(uint32_t currentMillis) {
     if ((currentMillis % UPDATE_MHZ19) == 0 || _co2 == 0 /* Initial load */) {
         _co2 = _mhz19.getPPM();
 
-        Serial.print("New co2 value = ");
+        Serial.print("MHZ19: co2 = ");
         Serial.println(_co2);
     }
     return _co2;
