@@ -63,8 +63,8 @@ uint16_t BME280::readPressure(uint32_t currentMillis) {
 
 void BME280::updateValues() {
     _bme.takeForcedMeasurement();
-    _temperature = _bme.readTemperature();
-    _humidity = _bme.readHumidity();
+    _temperature = _bme.readTemperature() - TEMPERATURE_CALIBRATION;
+    _humidity = _bme.readHumidity() - HUMIDITY_CALIBRATION;
     _pressure = _bme.readPressure() * 0.00750062f;
 }
 

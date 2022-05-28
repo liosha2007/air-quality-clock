@@ -7,7 +7,9 @@
 
 #include <stdint.h>
 
-#define SEALEVELPRESSURE_HPA (1013.25)
+//#define SEALEVELPRESSURE_HPA (1013.25)
+#define TEMPERATURE_CALIBRATION 5
+#define HUMIDITY_CALIBRATION (-5)
 
 #include <Adafruit_BME280.h>
 
