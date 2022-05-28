@@ -97,9 +97,10 @@ void Screen::drawButtery(uint16_t value, uint16_t min, uint16_t max) {
     }
 }
 
-void Screen::drawDateTime(DateTime & value) {
+void Screen::drawDateTime(DateTime &value) {
     // Date
-    if (lastDateTime.day() != value.day() || lastDateTime.month() != value.month() || lastDateTime.year() != value.year()) {
+    if (lastDateTime.day() != value.day() || lastDateTime.month() != value.month() ||
+        lastDateTime.year() != value.year()) {
         tft.fillRect(DATE_X, DATE_Y, DATE_W, DATE_H, ST7735_BLACK);
 
         tft.setCursor(DATE_X, DATE_Y);
@@ -129,13 +130,11 @@ void Screen::drawDateTime(DateTime & value) {
         uint8_t mins = value.minute();
         if (mins < 10) {
             minutes += "0";
-            minutes += String(mins);
-        } else {
-            minutes += String(mins / 10);
         }
+        minutes += mins;
 
         tft.setCursor(TIME_MINUTES_X, TIME_Y);
-        tft.print(mins);
+        tft.print(minutes);
     }
 
     uint16_t millis = value.millis();
