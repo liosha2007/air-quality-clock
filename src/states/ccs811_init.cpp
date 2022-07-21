@@ -12,7 +12,7 @@ namespace ccs811_init {
 
     static uint32_t capturedTime = 0;
 
-    void init() {
+    void init(void (*finishCallback)()) {
         Serial.print("..");
         switch (nextState) {
             case DrawStage:
@@ -29,7 +29,7 @@ namespace ccs811_init {
                 } else {
                     if (ccs811.init()) {
                         screen.drawProgressOk();
-                        eventBuffer.push(Event::InitCCS811Finish);
+                        finishCallback();
                     } else {
 //                        screen.drawProgressDot(); // Bug - display stops drawing anything
                         capturedTime = millis();
@@ -45,7 +45,7 @@ namespace ccs811_init {
                 } else {
                     if (ccs811.init()) {
                         screen.drawProgressOk();
-                        eventBuffer.push(Event::InitCCS811Finish);
+                        finishCallback();
                     } else {
 //                        screen.drawProgressDot(); // Bug - display stops drawing anything
                         capturedTime = millis();
@@ -64,12 +64,12 @@ namespace ccs811_init {
                     } else {
                         screen.drawProgressFail();
                     }
-                    eventBuffer.push(Event::InitCCS811Finish);
+                    finishCallback();
                 }
                 break;
             default:
                 Serial.println("__UNKNOWN__");
-                eventBuffer.push(Event::InitCCS811Finish);
+                finishCallback();
                 break;
         }
     }

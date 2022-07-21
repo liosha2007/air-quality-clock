@@ -10,7 +10,7 @@
 #include "EventSystem.h"
 
 namespace mhz19_init {
-    void init();
+    void init(void (*finishCallback)());
 }
 
 #endif //AIR_QUALITY_CLOCK_MHZ19_INIT_H

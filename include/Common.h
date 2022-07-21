@@ -9,13 +9,17 @@
 
 enum class Event : uint8_t {
     InitLed = 1, InitBeep, InitBattery,
-    InitScreen, InitScreenFinish,
-    InitMHZ19, InitMHZ19Finish,
-    InitBME280, InitBME280Finish,
-    InitDS3231, InitDS3231Finish,
-    InitMP503, InitMP503Finish,
-    InitCCS811, InitCCS811Finish,
-    DrawDateTime
+    InitScreen,
+    InitMHZ19,
+    InitBME280,
+    InitDS3231,
+    InitMP503,
+    InitCCS811,
+    DrawDateTime,
+    DrawMHZ19,
+    DrawBME280,
+    DrawMP503,
+    DrawCCS811
 };
 
 const char *eventToString(Event event);

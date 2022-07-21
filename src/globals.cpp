@@ -11,5 +11,6 @@ Screen screen;
 Battery battery;
 MHZ19 mhz19;
 DS3231 ds3231;
+BME280 bme280;
 MP503 mp503;
 CCS811 ccs811;

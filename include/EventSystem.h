@@ -16,11 +16,13 @@
 #include "states/ds3231_init.h"
 #include "states/mp503_init.h"
 #include "states/ccs811_init.h"
-#include "states/ccs811_drawdatetime.h"
+#include "states/ds3231_drawdatetime.h"
+#include "states/mhz19_draw.h"
+#include "states/bme280_draw.h"
+#include "states/mp503_draw.h"
+#include "states/ccs811_draw.h"
 
 #define EVENT_BUFFER_SIZE 8
-
-typedef void (*NoParamsCallback)();
 
 void idleStateCallback();
 

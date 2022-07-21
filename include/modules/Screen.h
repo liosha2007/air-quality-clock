@@ -47,6 +47,8 @@ public:
 
     void drawDateTime(DateTime &);
 
+    void drawDateTimeSeparator(bool);
+
     void drawTemperature(float);
 
     void drawHumidity(uint8_t);

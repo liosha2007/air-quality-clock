@@ -10,7 +10,7 @@
 #include "EventSystem.h"
 
 namespace bme280_init {
-    void init();
+    void init(void (*finishCallback)());
 }
 
 #endif //AIR_QUALITY_CLOCK_BME280_INIT_H

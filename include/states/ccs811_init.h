@@ -10,7 +10,7 @@
 #include "EventSystem.h"
 
 namespace ccs811_init {
-    void init();
+    void init(void (*finishCallback)());
 }
 
 #endif //AIR_QUALITY_CLOCK_CCS811_INIT_H

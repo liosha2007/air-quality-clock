@@ -12,7 +12,7 @@ namespace mhz19_init {
 
     static uint32_t capturedTime = 0;
 
-    void init() {
+    void init(void (*finishCallback)()) {
         Serial.print("..");
         switch (nextState) {
             case DrawStage:
@@ -29,7 +29,7 @@ namespace mhz19_init {
                 } else {
                     if (mhz19.init(MHZ19B_TX, MHZ19B_RX)) {
                         screen.drawProgressOk();
-                        eventBuffer.push(Event::InitMHZ19Finish);
+                        finishCallback();
                     } else {
                         screen.drawProgressDot();
                         capturedTime = millis();
@@ -45,7 +45,7 @@ namespace mhz19_init {
                 } else {
                     if (mhz19.init(MHZ19B_TX, MHZ19B_RX)) {
                         screen.drawProgressOk();
-                        eventBuffer.push(Event::InitMHZ19Finish);
+                        finishCallback();
                     } else {
                         screen.drawProgressDot();
                         capturedTime = millis();
@@ -64,12 +64,12 @@ namespace mhz19_init {
                     } else {
                         screen.drawProgressFail();
                     }
-                    eventBuffer.push(Event::InitMHZ19Finish);
+                    finishCallback();
                 }
                 break;
             default:
                 Serial.println("__UNKNOWN__");
-                eventBuffer.push(Event::InitMHZ19Finish);
+                finishCallback();
                 break;
         }
     }

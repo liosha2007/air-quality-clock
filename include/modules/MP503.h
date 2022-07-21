@@ -36,7 +36,7 @@ public:
      * It is recommended (in datasheet) to delay for about 5 minute to let the sensor heat itself.
      * @return pollution level, see constants in MP503 class
      */
-    uint8_t readPollution();
+    uint8_t readPollution() const;
 
     static const uint8_t ERROR = 0;
     static const uint8_t CLEAN_AIR = 1;

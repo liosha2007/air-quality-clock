@@ -11,7 +11,7 @@ namespace screen_init {
 
     static uint32_t capturedTime = 0;
 
-    void init() {
+    void init(void (*finishCallback)()) {
         Serial.print("..");
         switch (nextState) {
             case Init:
@@ -32,12 +32,12 @@ namespace screen_init {
                 if (millis() - capturedTime < 1000) { // KeepLogo
                     eventBuffer.push(Event::InitScreen);
                 } else {
-                    eventBuffer.push(Event::InitScreenFinish);
+                    finishCallback();
                 }
                 break;
             default:
                 Serial.println("__UNKNOWN__");
-                eventBuffer.push(Event::InitScreenFinish);
+                finishCallback();
                 break;
         }
     }

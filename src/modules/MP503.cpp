@@ -15,7 +15,7 @@ bool MP503::init(uint8_t pinA, uint8_t pinB) {
     return true;
 }
 
-uint8_t MP503::readPollution() {
+uint8_t MP503::readPollution() const {
     int valA = digitalRead(_pinA);
     int valB = digitalRead(_pinB);
 

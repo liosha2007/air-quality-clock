@@ -12,7 +12,7 @@ namespace mp503_init {
 
     static uint32_t capturedTime = 0;
 
-    void init() {
+    void init(void (*finishCallback)()) {
         Serial.print("..");
         switch (nextState) {
             case DrawStage:
@@ -32,12 +32,12 @@ namespace mp503_init {
                     } else {
                         screen.drawProgressFail();
                     }
-                    eventBuffer.push(Event::InitMP503Finish);
+                    finishCallback();
                 }
                 break;
             default:
                 Serial.println("__UNKNOWN__");
-                eventBuffer.push(Event::InitMP503Finish);
+                finishCallback();
                 break;
         }
     }

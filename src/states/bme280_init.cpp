@@ -11,7 +11,7 @@ namespace bme280_init {
 
     static uint32_t capturedTime = 0;
 
-    void init() {
+    void init(void (*finishCallback)()) {
         Serial.print("..");
         switch (nextState) {
             case DrawStage:
@@ -26,9 +26,9 @@ namespace bme280_init {
                 if (millis() - capturedTime < 10) {
                     eventBuffer.push(Event::InitBME280);
                 } else {
-                    if (ds3231.init()) {
+                    if (bme280.init()) {
                         screen.drawProgressOk();
-                        eventBuffer.push(Event::InitBME280Finish);
+                        finishCallback();
                     } else {
                         screen.drawProgressDot();
                         capturedTime = millis();
@@ -39,12 +39,12 @@ namespace bme280_init {
                 break;
             case TrySecond:
                 Serial.println("TrySecond");
-                if (millis() - capturedTime < 100) { // KeepLogo
+                if (millis() - capturedTime < 100) {
                     eventBuffer.push(Event::InitBME280);
                 } else {
-                    if (ds3231.init()) {
+                    if (bme280.init()) {
                         screen.drawProgressOk();
-                        eventBuffer.push(Event::InitBME280Finish);
+                        finishCallback();
                     } else {
                         screen.drawProgressDot();
                         capturedTime = millis();
@@ -58,17 +58,17 @@ namespace bme280_init {
                 if (millis() - capturedTime < 100) { // KeepLogo
                     eventBuffer.push(Event::InitBME280);
                 } else {
-                    if (ds3231.init()) {
+                    if (bme280.init()) {
                         screen.drawProgressOk();
                     } else {
                         screen.drawProgressFail();
                     }
-                    eventBuffer.push(Event::InitBME280Finish);
+                    finishCallback();
                 }
                 break;
             default:
                 Serial.println("__UNKNOWN__");
-                eventBuffer.push(Event::InitBME280Finish);
+                finishCallback();
                 break;
         }
     }

@@ -10,7 +10,7 @@
 #include "EventSystem.h"
 
 namespace ds3231_init {
-    void init();
+    void init(void (*finishCallback)());
 }
 
 #endif //AIR_QUALITY_CLOCK_DS3231_INIT_H

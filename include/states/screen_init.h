@@ -10,7 +10,7 @@
 #include "EventSystem.h"
 
 namespace screen_init {
-    void init();
+    void init(void (*finishCallback)());
 }
 
 #endif //AIR_QUALITY_CLOCK_SCREEN_INIT_H

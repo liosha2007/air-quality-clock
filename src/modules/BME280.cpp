@@ -4,68 +4,52 @@
 
 #include "modules/BME280.h"
 
-BME280::BME280() {
-    _bme = Adafruit_BME280();
-    _temperature = 0;
-    _humidity = 0;
-    _pressure = 0;
+BME280::BME280() : _bme(Adafruit_BME280()) {
 }
 
-bool BME280::initialize(uint8_t triesCount, void (&callback)(uint8_t)) {
-    uint8_t tryNumber = 0;
-    while (tryNumber < triesCount) {
-        if (_bme.begin(BME280_ADDRESS)) {
-            // Configure BME280
+bool BME280::init() {
+    if (_bme.begin(BME280_ADDRESS)) {
+        // Configure BME280
 //            _bme.seaLevelForAltitude(, SEALEVELPRESSURE_HPA)
-            _bme.setSampling(Adafruit_BME280::MODE_FORCED,
-                             Adafruit_BME280::SAMPLING_X1, // Temperature
-                             Adafruit_BME280::SAMPLING_X1, // pressure
-                             Adafruit_BME280::SAMPLING_X1, // humidity
-                             Adafruit_BME280::FILTER_OFF);
-            return true;
-        }
-        callback(tryNumber);
-        tryNumber++;
-        delay(10);
+        _bme.setSampling(Adafruit_BME280::MODE_FORCED,
+                         Adafruit_BME280::SAMPLING_X1, // Temperature
+                         Adafruit_BME280::SAMPLING_X1, // pressure
+                         Adafruit_BME280::SAMPLING_X1, // humidity
+                         Adafruit_BME280::FILTER_OFF);
+        return true;
     }
     return false;
 }
 
-float BME280::readTemperature(uint32_t currentMillis) {
-    if ((currentMillis % UPDATE_BME280) == 0 || _temperature == 0 /* Initial load */) {
-        updateValues();
-
-        Serial.print("BME280: temperature = ");
-        Serial.println(_temperature);
-    }
-    return /*roundTemperatureQuality(*/_temperature/*)*/;
-}
-
-uint8_t BME280::readHumidity(uint32_t currentMillis) {
-    if ((currentMillis % UPDATE_BME280) == 0 || _humidity == 0 /* Initial load */) {
-        updateValues();
-
-        Serial.print("BME280: humidity = ");
-        Serial.println(_humidity);
-    }
-    return roundHumidityQuality(_humidity);
-}
-
-uint16_t BME280::readPressure(uint32_t currentMillis) {
-    if ((currentMillis % UPDATE_BME280) == 0 || _pressure == 0 /* Initial load */) {
-        updateValues();
-
-        Serial.print("BME280 pressure = ");
-        Serial.println(_pressure);
-    }
-    return roundPressureQuality(_pressure);
-}
-
-void BME280::updateValues() {
+void BME280::takeMeasurement() {
     _bme.takeForcedMeasurement();
-    _temperature = _bme.readTemperature() - TEMPERATURE_CALIBRATION;
-    _humidity = _bme.readHumidity() - HUMIDITY_CALIBRATION;
-    _pressure = _bme.readPressure() * 0.00750062f;
+}
+
+float BME280::readTemperature() {
+    float temperature = _bme.readTemperature() - TEMPERATURE_CALIBRATION;
+
+    Serial.print("BME280: temperature = ");
+    Serial.println(temperature);
+
+    return /*roundTemperatureQuality(*/temperature/*)*/;
+}
+
+uint8_t BME280::readHumidity() {
+    float humidity = _bme.readHumidity() - HUMIDITY_CALIBRATION;
+
+    Serial.print("BME280: humidity = ");
+    Serial.println(humidity);
+
+    return roundHumidityQuality(humidity);
+}
+
+uint16_t BME280::readPressure() {
+    float pressure = _bme.readPressure() * 0.00750062f;
+
+    Serial.print("BME280 pressure = ");
+    Serial.println(pressure);
+
+    return roundPressureQuality(pressure);
 }
 
 uint16_t BME280::roundPressureQuality(float value) {

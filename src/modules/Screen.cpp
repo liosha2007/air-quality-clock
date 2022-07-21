@@ -137,27 +137,18 @@ void Screen::drawDateTime(DateTime &value) {
         tft.print(minutes);
     }
 
-    uint16_t millis = value.millis();
-    bool dateTimeSeparator;
-    if (millis >= 0 && millis < 500) {
-        dateTimeSeparator = false;
-    } else {
-        dateTimeSeparator = true;
-    }
-
-    if (lastDateTimeSeparator != dateTimeSeparator) {
-        tft.fillRect(TIME_SEPARATOR_X, TIME_Y, TIME_SEPARATOR_W, TIME_H, ST7735_BLACK);
-
-        if (dateTimeSeparator) {
-            tft.setCursor(TIME_SEPARATOR_X, TIME_Y);
-            tft.setTextSize(TEXT_SIZE_BIG);
-            tft.setTextColor(ST7735_WHITE);
-            tft.print(String(":"));
-        }
-        lastDateTimeSeparator = dateTimeSeparator;
-    }
-
     lastDateTime = value;
+}
+
+void Screen::drawDateTimeSeparator(bool showDots) {
+    if (showDots) {
+        tft.setCursor(TIME_SEPARATOR_X, TIME_Y);
+        tft.setTextSize(TEXT_SIZE_BIG);
+        tft.setTextColor(ST7735_WHITE);
+        tft.print(String(":"));
+    } else {
+        tft.fillRect(TIME_SEPARATOR_X, TIME_Y, TIME_SEPARATOR_W, TIME_H, ST7735_BLACK);
+    }
 }
 
 void Screen::drawPollution(uint8_t value, uint8_t maximum) {

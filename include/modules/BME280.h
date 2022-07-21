@@ -13,8 +13,6 @@
 
 #include "Adafruit_BME280.h"
 
-#define UPDATE_BME280 60000
-
 /**
  * Temperature, humidity and pressure
  */
@@ -28,16 +26,17 @@ public:
     /**
      * Initializes pins
      */
-    bool initialize(uint8_t triesCount, void (&)(uint8_t));
+    bool init();
 
-    float readTemperature(uint32_t currentMillis);
+    void takeMeasurement();
 
-    uint8_t readHumidity(uint32_t currentMillis);
+    float readTemperature();
 
-    uint16_t readPressure(uint32_t currentMillis);
+    uint8_t readHumidity();
+
+    uint16_t readPressure();
 
 private:
-    void updateValues();
 
     static uint16_t roundPressureQuality(float);
 
@@ -46,9 +45,6 @@ private:
     static float roundTemperatureQuality(float);
 
     Adafruit_BME280 _bme;
-    float _temperature;
-    float _humidity;
-    float _pressure;
 };
 
 

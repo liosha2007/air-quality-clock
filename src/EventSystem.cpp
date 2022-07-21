@@ -39,10 +39,9 @@ void dispatchEvent(Event event) {
             break;
         case Event::InitScreen:
             Serial.println("InitScreen");
-            screen_init::init();
-            break;
-        case Event::InitScreenFinish:
-            eventBuffer.push(Event::InitMHZ19);
+            screen_init::init([]() {
+                eventBuffer.push(Event::InitMHZ19);
+            });
             break;
         case Event::InitBeep:
             Serial.println("InitBeep");
@@ -54,42 +53,57 @@ void dispatchEvent(Event event) {
             break;
         case Event::InitMHZ19:
             Serial.println("InitMHZ19");
-            mhz19_init::init();
-            break;
-        case Event::InitMHZ19Finish:
-            eventBuffer.push(Event::InitBME280);
+            mhz19_init::init([]() {
+                eventBuffer.push(Event::InitBME280);
+            });
             break;
         case Event::InitBME280:
             Serial.println("InitBME280");
-            bme280_init::init();
-            break;
-        case Event::InitBME280Finish:
-            eventBuffer.push(Event::InitDS3231);
+            bme280_init::init([]() {
+                eventBuffer.push(Event::InitDS3231);
+            });
             break;
         case Event::InitDS3231:
             Serial.println("InitDS3231");
-            ds3231_init::init();
-            break;
-        case Event::InitDS3231Finish:
-            eventBuffer.push(Event::InitMP503);
+            ds3231_init::init([]() {
+                eventBuffer.push(Event::InitMP503);
+            });
             break;
         case Event::InitMP503:
             Serial.println("InitMP503");
-            mp503_init::init();
-            break;
-        case Event::InitMP503Finish:
-            eventBuffer.push(Event::InitCCS811);
+            mp503_init::init([]() {
+                eventBuffer.push(Event::InitCCS811);
+            });
             break;
         case Event::InitCCS811:
             Serial.println("InitCCS811");
-            ccs811_init::init();
-            break;
-        case Event::InitCCS811Finish:
-            eventBuffer.push(Event::DrawDateTime);
+            ccs811_init::init([]() {
+                eventBuffer.push(Event::DrawDateTime);
+                eventBuffer.push(Event::DrawMHZ19);
+                eventBuffer.push(Event::DrawBME280);
+                eventBuffer.push(Event::DrawMP503);
+                eventBuffer.push(Event::DrawCCS811);
+            });
             break;
         case Event::DrawDateTime:
             Serial.println("DrawDateTime");
-            ccs811_drawdatetime::draw();
+            ds3231_drawdatetime::draw();
+            break;
+        case Event::DrawMHZ19:
+            Serial.println("DrawMHZ19");
+            mhz19_draw::draw();
+            break;
+        case Event::DrawBME280:
+            Serial.println("DrawBME280");
+            bme280_draw::draw();
+            break;
+        case Event::DrawMP503:
+            Serial.println("DrawMP503");
+//            mp503_draw::draw(); // Bug...
+            break;
+        case Event::DrawCCS811:
+            Serial.println("DrawCCS811");
+            ccs811_draw::draw();
             break;
         default:
             Serial.println("__UNKNOWN__");

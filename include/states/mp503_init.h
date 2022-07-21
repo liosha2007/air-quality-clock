@@ -10,7 +10,7 @@
 #include "EventSystem.h"
 
 namespace mp503_init {
-    void init();
+    void init(void (*finishCallback)());
 }
 
 #endif //AIR_QUALITY_CLOCK_MP503_INIT_H

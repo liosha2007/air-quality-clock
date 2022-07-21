@@ -11,7 +11,7 @@ namespace ds3231_init {
 
     static uint32_t capturedTime = 0;
 
-    void init() {
+    void init(void (*finishCallback)()) {
         Serial.print("..");
         switch (nextState) {
             case DrawStage:
@@ -28,7 +28,7 @@ namespace ds3231_init {
                 } else {
                     if (ds3231.init()) {
                         screen.drawProgressOk();
-                        eventBuffer.push(Event::InitDS3231Finish);
+                        finishCallback();
                     } else {
                         screen.drawProgressDot();
                         capturedTime = millis();
@@ -44,7 +44,7 @@ namespace ds3231_init {
                 } else {
                     if (ds3231.init()) {
                         screen.drawProgressOk();
-                        eventBuffer.push(Event::InitDS3231Finish);
+                        finishCallback();
                     } else {
                         screen.drawProgressDot();
                         capturedTime = millis();
@@ -63,12 +63,12 @@ namespace ds3231_init {
                     } else {
                         screen.drawProgressFail();
                     }
-                    eventBuffer.push(Event::InitDS3231Finish);
+                    finishCallback();
                 }
                 break;
             default:
                 Serial.println("__UNKNOWN__");
-                eventBuffer.push(Event::InitDS3231Finish);
+                finishCallback();
                 break;
         }
     }
