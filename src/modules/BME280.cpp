@@ -2,7 +2,7 @@
 // Created by liosha on 23.05.2022.
 //
 
-#include "BME280.h"
+#include "modules/BME280.h"
 
 BME280::BME280() {
     _bme = Adafruit_BME280();

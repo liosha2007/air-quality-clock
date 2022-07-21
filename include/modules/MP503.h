@@ -20,25 +20,23 @@
 
 #include <Arduino.h>
 
-#define UPDATE_MP503 100000
-
 class MP503 {
 public:
     /**
      * Pin number
      */
-    MP503(uint8_t, uint8_t);
+    MP503();
 
     /**
      * Initializes pins
      */
-    bool initialize() const;
+    bool init(uint8_t, uint8_t);
 
     /**
      * It is recommended (in datasheet) to delay for about 5 minute to let the sensor heat itself.
      * @return pollution level, see constants in MP503 class
      */
-    uint8_t readPollution(uint32_t);
+    uint8_t readPollution();
 
     static const uint8_t ERROR = 0;
     static const uint8_t CLEAN_AIR = 1;
@@ -49,7 +47,6 @@ public:
 private:
     uint8_t _pinA;
     uint8_t _pinB;
-    uint8_t _pollution;
 };
 
 #endif //AIR_QUALITY_CLOCK_MP503_H

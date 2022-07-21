@@ -5,9 +5,7 @@
 #ifndef AIR_QUALITY_CLOCK_DS3231_H
 #define AIR_QUALITY_CLOCK_DS3231_H
 
-#include <RTClib.h>
-
-#define UPDATE_DS3231 60000
+#include "RTClib.h"
 
 class DS3231 {
 public:
@@ -17,9 +15,9 @@ public:
     /**
      * Initializes pins
      */
-    bool initialize(uint8_t triesCount, void (&callback)(uint8_t));
+    bool init();
 
-    DateTime readDateTime(uint32_t currentMillis);
+    DateTime readDateTime() const;
 
     void updateDateTime(bool);
 
@@ -27,13 +25,9 @@ public:
 
     static String formatTimeAsString(DateTime &dateTime);
 
-    ~DS3231();
-
 private:
-    void updateValues();
 
     RTC_DS3231 _rtc;
-    DateTime *_dateTime;
 };
 
 

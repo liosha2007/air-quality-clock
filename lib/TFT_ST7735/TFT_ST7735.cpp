@@ -291,7 +291,7 @@ void TFT_ST7735::init(void)
     ST7735_DISPON ,   DELAY,  // 18: Main screen turn on, no args, w/delay
       255 },                  //     255 = 500 ms delay
 
-  Rcmd1[] = {                 // Init for 7735R, part 1 (red or green tab)
+  Rcmd1[] = {                 // InitScreen for 7735R, part 1 (red or green tab)
     15,                       // 15 commands in list:
     ST7735_SWRESET,   DELAY,  //  1: Software reset, 0 args, w/delay
       150,                    //     150 ms delay
@@ -328,7 +328,7 @@ void TFT_ST7735::init(void)
     ST7735_COLMOD , 1      ,  // 15: set color mode, 1 arg, no delay:
       0x05 },                 //     16-bit color
 
-  Rcmd2green[] = {            // Init for 7735R, part 2 (green tab only)
+  Rcmd2green[] = {            // InitScreen for 7735R, part 2 (green tab only)
     2,                        //  2 commands in list:
     ST7735_CASET  , 4      ,  //  1: Column addr set, 4 args, no delay:
       0x00, 0x02,             //     XSTART = 0
@@ -337,7 +337,7 @@ void TFT_ST7735::init(void)
       0x00, 0x01,             //     XSTART = 0
       0x00, 0x9F+0x01 },      //     XEND = 159
 
-  Rcmd2red[] = {              // Init for 7735R, part 2 (red tab only)
+  Rcmd2red[] = {              // InitScreen for 7735R, part 2 (red tab only)
     2,                        //  2 commands in list:
     ST7735_CASET  , 4      ,  //  1: Column addr set, 4 args, no delay:
       0x00, 0x00,             //     XSTART = 0
@@ -346,7 +346,7 @@ void TFT_ST7735::init(void)
       0x00, 0x00,             //     XSTART = 0
       0x00, 0x9F },           //     XEND = 159
 
-  Rcmd3[] = {                 // Init for 7735R, part 3 (red or green tab)
+  Rcmd3[] = {                 // InitScreen for 7735R, part 3 (red or green tab)
     4,                        //  4 commands in list:
     ST7735_GMCTRP1, 16      , //  1: Magical unicorn dust, 16 args, no delay:
       0x02, 0x1c, 0x07, 0x12,
@@ -2135,7 +2135,7 @@ int TFT_ST7735::drawFloat(float floatNumber, int dp, int poX, int poY, int font)
 
 /***************************************************************************************
 ** Function name:           spiWrite16
-** Descriptions:            Delay based assembler loop for fast SPI write
+** Descriptions:            KeepLogo based assembler loop for fast SPI write
 ***************************************************************************************/
 inline void spiWrite16(uint16_t data, int16_t count)
 {
@@ -2208,7 +2208,7 @@ inline void spiWrite16s(uint16_t data)
 
 /***************************************************************************************
 ** Function name:           spiWrite16R with hi<>lo reversed (not used)
-** Descriptions:            Delay based assembler loop for fast SPI write
+** Descriptions:            KeepLogo based assembler loop for fast SPI write
 ***************************************************************************************/
 inline void spiWrite16R(uint16_t data, int16_t count)
 {

@@ -2,45 +2,21 @@
 // Created by liosha on 24.05.2022.
 //
 
-#include "DS3231.h"
+#include "modules/DS3231.h"
 
-DS3231::DS3231() {
-    _dateTime = nullptr;
-}
+DS3231::DS3231() = default;
 
-bool DS3231::initialize(uint8_t triesCount, void (&callback)(uint8_t)) {
-    uint8_t tryNumber = 0;
-    while (tryNumber < triesCount) {
-        if (_rtc.begin()) {
-            updateDateTime(false);
-            return true;
-        }
-        callback(tryNumber);
-        tryNumber++;
-        delay(10);
+bool DS3231::init() {
+    if (_rtc.begin()) {
+        updateDateTime(false);
+        return true;
     }
     return false;
 }
 
-DateTime DS3231::readDateTime(uint32_t currentMillis) {
-    if ((currentMillis % UPDATE_DS3231) == 0 || _dateTime == nullptr /* Initial load */) {
-        updateValues();
-
-        Serial.print("DS3231: date = ");
-        Serial.print(formatDateAsString(*_dateTime));
-        Serial.print(",\n\ttime value = ");
-        Serial.println(formatTimeAsString(*_dateTime));
-    } else if ((currentMillis % 500) == 0) {
-        uint16_t millis = _dateTime->millis() + 500;
-        _dateTime->setMillis(millis % 1000); // Will be reset to 0 each UPDATE_DS3231 ms
-    }
-    return *_dateTime;
-}
-
-void DS3231::updateValues() {
-    delete _dateTime;
+DateTime DS3231::readDateTime() const {
     DateTime now = RTC_DS3231::now();
-    _dateTime = new DateTime(now);
+    return now;
 }
 
 /**
@@ -53,10 +29,6 @@ void DS3231::updateDateTime(bool isForse) {
     if (isForse || _rtc.lostPower()) {
         RTC_DS3231::adjust(DateTime(F(__DATE__), F(__TIME__)));
     }
-}
-
-DS3231::~DS3231() {
-    delete _dateTime;
 }
 
 String DS3231::formatDateAsString(DateTime &dateTime) {

@@ -3,9 +3,9 @@
 //
 
 
-#include "Screen.h"
+#include "modules/Screen.h"
 #include "RTClib.h"
-#include "DS3231.h"
+#include "modules/DS3231.h"
 
 Screen::Screen() {
     screenEnabled = true;

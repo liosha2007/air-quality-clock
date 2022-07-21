@@ -11,7 +11,7 @@
 #define TEMPERATURE_CALIBRATION 5
 #define HUMIDITY_CALIBRATION (-5)
 
-#include <Adafruit_BME280.h>
+#include "Adafruit_BME280.h"
 
 #define UPDATE_BME280 60000
 

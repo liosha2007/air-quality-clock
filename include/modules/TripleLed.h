@@ -9,12 +9,12 @@
 
 class TripleLed {
 public:
-    TripleLed(uint8_t, uint8_t, uint8_t);
+    TripleLed();
 
     /**
      * Configures pin's modes
      */
-    void initialize() const;
+    void initialize(uint8_t red, uint8_t green, uint8_t blue);
 
     /**
      * Disables or enables the led
@@ -30,26 +30,34 @@ public:
      */
     void update(uint8_t redPart, uint8_t greenPart, uint8_t bluePart) const;
 
-    /**
-     * Enables red color, sleeps for 500ms and disables led.
-     */
-    void blinkRed(uint16_t delayMs = 500) const;
+    void allOff() const;
 
     /**
-     * Enables green color, sleeps for 500ms and disables led.
+     * Enables red color
      */
-    void blinkGreen(uint16_t delayMs = 500) const;
+    void redOn() const;
+
+    void redOff() const;
 
     /**
-     * Enables blue color, sleeps for 500ms and disables led.
+     * Enables green color
      */
-    void blinkBlue(uint16_t delayMs = 500) const;
+    void greenOn() const;
+
+    void greenOff() const;
+
+    /**
+     * Enables blue color
+     */
+    void blueOn() const;
+
+    void blueOff() const;
 
 private:
-    uint8_t redPin;
-    uint8_t greenPin;
-    uint8_t bluePin;
-    uint8_t ledEnabled;
+    uint8_t _redPin;
+    uint8_t _greenPin;
+    uint8_t _bluePin;
+    uint8_t _ledEnabled;
 };
 
 #endif //AIR_QUALITY_CLOCK_TRIPLELED_H

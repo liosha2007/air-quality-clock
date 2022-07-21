@@ -363,7 +363,7 @@ class TFT_ST7735 : public Print {
 
  protected:
 
-  int16_t  _width, _height, // Display w/h as modified by current rotation
+  uint16_t  _width, _height, // Display w/h as modified by current rotation
            cursor_x, cursor_y, padX;
 
   uint16_t textcolor, textbgcolor, fontsloaded;

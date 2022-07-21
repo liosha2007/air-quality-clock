@@ -7,7 +7,7 @@
 
 #include <Arduino.h>
 
-#include <TFT_ST7735.h>
+#include "TFT_ST7735.h"
 #include <SPI.h>
 
 #include "Utils.h"

@@ -2,28 +2,26 @@
 // Created by liosha on 23.05.2022.
 //
 
-#ifndef AIR_QUALITY_CLOCK_BUTTERY_H
-#define AIR_QUALITY_CLOCK_BUTTERY_H
-
+#ifndef AIR_QUALITY_CLOCK_BATTERY_H
+#define AIR_QUALITY_CLOCK_BATTERY_H
 
 #include <stdint.h>
 
-#define UPDATE_BUTTERY 15000
 #define BUTTERY_MIN 1
 #define BUTTERY_MAX 160
 #define BUTTERY_MIN_RAW 1
 #define BUTTERY_MAX_RAW 250
 
-class Buttery {
+class Battery {
 public:
     /**
      * Pin number
      */
-    explicit Buttery(uint8_t);
+    explicit Battery();
 
-    void initialize() const;
+    void init(uint8_t);
 
-    uint8_t readLevel(uint32_t currentMillis);
+    uint8_t readLevel();
 
 private:
     uint8_t _pin;
@@ -32,5 +30,4 @@ private:
     static uint8_t displayableLevel(int16_t level);
 };
 
-
-#endif //AIR_QUALITY_CLOCK_BUTTERY_H
+#endif //AIR_QUALITY_CLOCK_BATTERY_H

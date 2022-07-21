@@ -6,30 +6,27 @@
 #define AIR_QUALITY_CLOCK_MHZ19_H
 
 #include <stdint.h>
-#include <MHZ19_uart.h>
-
-#define UPDATE_MHZ19 110000
+#include "MHZ19_uart.h"
 
 class MHZ19 {
 public:
     /**
      * Pin numbers
      */
-    explicit MHZ19(uint8_t, uint8_t);
+    explicit MHZ19();
 
     /**
      * Initializes pins
      */
-    bool initialize(uint8_t triesCount, void (&)(uint8_t));
+    bool init(uint8_t, uint8_t);
 
-    int16_t readCo2(uint32_t currentMillis);
+    int16_t readCo2();
 
 private:
 
     MHZ19_uart _mhz19;
     uint8_t _pinTx;
     uint8_t _pinRx;
-    int16_t _co2;
 };
 
 
