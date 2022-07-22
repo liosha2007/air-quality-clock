@@ -23,7 +23,7 @@ namespace mp503_init {
                 eventBuffer.push(Event::InitMP503);
                 break;
             case TryFirst:
-                Serial.println("TryFirst");
+                Serial.println("TryInit");
                 if (millis() - capturedTime < 100) {
                     eventBuffer.push(Event::InitMP503);
                 } else {

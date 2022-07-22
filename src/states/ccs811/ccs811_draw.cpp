@@ -7,18 +7,24 @@
 namespace ccs811_draw {
 
     enum : uint8_t {
-        Draw = 1, Wait
-    } nextState = Draw;
+        Measure = 1, Draw, Wait
+    } nextState = Measure;
 
     static uint32_t capturedTime = 0;
 
     void draw() {
         Serial.print("..");
         switch (nextState) {
+            case Measure:
+                if (ccs811.checkDataReady()) {
+                    nextState = Draw;
+                }
+                eventBuffer.push(Event::DrawCCS811);
+                break;
             case Draw: {
                 Serial.println("Draw");
 
-                uint16_t tvoc = ccs811.readTvoc();
+                uint16_t tvoc = ccs811.getTVOCPPB();
                 screen.drawTVOC(tvoc);
 
                 capturedTime = millis();
@@ -28,10 +34,10 @@ namespace ccs811_draw {
             }
             case Wait: {
                 Serial.println("Wait");
-                if (millis() - capturedTime < DRAW_CCS811_DELAY_MS) {
+                if (millis() - capturedTime < CCS811_DRAW_DELAY_MS) {
                     eventBuffer.push(Event::DrawCCS811);
                 } else {
-                    nextState = Draw;
+                    nextState = Measure;
                     eventBuffer.push(Event::DrawCCS811);
                 }
                 break;

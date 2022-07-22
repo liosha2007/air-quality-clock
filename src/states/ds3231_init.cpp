@@ -22,7 +22,7 @@ namespace ds3231_init {
                 eventBuffer.push(Event::InitDS3231);
                 break;
             case TryFirst:
-                Serial.println("TryFirst");
+                Serial.println("TryInit");
                 if (millis() - capturedTime < 100) { // KeepLogo
                     eventBuffer.push(Event::InitDS3231);
                 } else {

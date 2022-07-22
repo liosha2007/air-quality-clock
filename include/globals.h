@@ -12,8 +12,8 @@
 #include "modules/MHZ19.h"
 #include "modules/DS3231.h"
 #include "modules/MP503.h"
-#include "modules/CCS811.h"
 #include "modules/BME280.h"
+#include "DFRobot_CCS811.h"
 
 //static volatile State currentState = State::Idle;
 
@@ -26,7 +26,7 @@ extern MHZ19 mhz19;
 extern DS3231 ds3231;
 extern BME280 bme280;
 extern MP503 mp503;
-extern CCS811 ccs811;
+extern DFRobot_CCS811 ccs811;
 
 typedef void (*NoParamsCallback)();
 

@@ -9,6 +9,8 @@
 #include "Common.h"
 #include "EventSystem.h"
 
+#define INIT_MAX_TRY_COUNT 5
+
 namespace ccs811_init {
     void init(void (*finishCallback)());
 }

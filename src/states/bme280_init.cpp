@@ -22,7 +22,7 @@ namespace bme280_init {
                 eventBuffer.push(Event::InitBME280);
                 break;
             case TryFirst:
-                Serial.println("TryFirst");
+                Serial.println("TryInit");
                 if (millis() - capturedTime < 10) {
                     eventBuffer.push(Event::InitBME280);
                 } else {

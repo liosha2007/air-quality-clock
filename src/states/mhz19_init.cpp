@@ -23,7 +23,7 @@ namespace mhz19_init {
                 eventBuffer.push(Event::InitMHZ19);
                 break;
             case TryFirst:
-                Serial.println("TryFirst");
+                Serial.println("TryInit");
                 if (millis() - capturedTime < 10) {
                     eventBuffer.push(Event::InitMHZ19);
                 } else {

@@ -9,7 +9,7 @@
 #include "Common.h"
 #include "EventSystem.h"
 
-#define DRAW_CCS811_DELAY_MS 60000
+#define CCS811_DRAW_DELAY_MS 60000
 
 namespace ccs811_draw {
     void draw();
