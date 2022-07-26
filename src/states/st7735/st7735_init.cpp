@@ -5,16 +5,14 @@
 #include "states/st7735/st7735_init.h"
 
 namespace st7735 {
-    enum : uint8_t {
-        Init = 1, DrawLogo, KeepLogo
-    } nextState = Init;
+    static State nextState = State::Init;
 
     static uint32_t capturedTime = 0;
 
     void init(void (*finishCallback)()) {
         Serial.print("..");
         switch (nextState) {
-            case Init:
+            case State::Init:
                 Serial.println("Init");
 
                 it.initR(INITR_BLACKTAB);
@@ -22,10 +20,10 @@ namespace st7735 {
                 it.setFont();
                 it.enableDisplay(false);
 
-                nextState = DrawLogo;
+                nextState = State::Draw;
                 eventBuffer.push(Event::InitScreen);
                 break;
-            case DrawLogo:
+            case State::Draw:
                 Serial.println("DrawLogo");
 
                 it.enableDisplay(true);
@@ -39,10 +37,10 @@ namespace st7735 {
                 // endregion
 
                 capturedTime = millis();
-                nextState = KeepLogo;
+                nextState = State::Delay;
                 eventBuffer.push(Event::InitScreen);
                 break;
-            case KeepLogo:
+            case State::Delay:
                 Serial.println("KeepLogo");
                 if (millis() - capturedTime < 500) { // KeepLogo
                     eventBuffer.push(Event::InitScreen);

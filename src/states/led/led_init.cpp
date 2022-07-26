@@ -5,69 +5,60 @@
 
 namespace led {
 
-    enum : uint8_t {
-        Init = 1, RedOn, GreenOn, BlueOn, KeepOn
-    } nextState = Init;
+    static State nextState = State::Init;
+    static enum {
+        Red = 1, Green, Blue, Disable
+    } ledColor = Red;
 
     static uint32_t capturedTime = 0;
 
     void init() {
         Serial.print("..");
         switch (nextState) {
-            case Init:
+            case State::Init:
                 Serial.println("Init");
 
                 it.initialize(LED_RED, LED_GREEN, LED_BLUE);
                 it.allOff();
 
-                capturedTime = millis();
-                nextState = RedOn;
+                nextState = State::Draw;
                 eventBuffer.push(Event::InitLed);
                 break;
-            case RedOn:
-                Serial.println("RedOn");
+            case State::Draw: {
+                Serial.println("Draw");
 
-                it.redOn();
-
+                switch (ledColor) {
+                    case Red:
+                        it.redOn();
+                        ledColor = Green;
+                        break;
+                    case Green:
+                        it.redOff();
+                        it.greenOn();
+                        ledColor = Blue;
+                        break;
+                    case Blue:
+                        it.greenOff();
+                        it.blueOn();
+                        ledColor = Disable;
+                        break;
+                    case Disable:
+                        it.blueOff();
+                        return; // Leave led_init
+                }
                 capturedTime = millis();
-                nextState = GreenOn;
+                nextState = State::Delay;
+
                 eventBuffer.push(Event::InitLed);
                 break;
-            case GreenOn:
-                Serial.println("GreenOn");
+            }
+            case State::Delay:
+                Serial.println("Delay");
                 if (millis() - capturedTime < 500) {
                     eventBuffer.push(Event::InitLed);
                 } else {
-
-                    it.redOff();
-                    it.greenOn();
-
-                    capturedTime = millis();
-                    nextState = BlueOn;
+                    nextState = State::Draw;
                     eventBuffer.push(Event::InitLed);
-                }
-                break;
-            case BlueOn:
-                Serial.println("BlueOn");
-                if (millis() - capturedTime < 500) {
-                    eventBuffer.push(Event::InitLed);
-                } else {
-
-                    it.greenOff();
-                    it.blueOn();
-
-                    capturedTime = millis();
-                    nextState = KeepOn;
-                    eventBuffer.push(Event::InitLed);
-                }
-                break;
-            case KeepOn:
-                Serial.println("KeepOn");
-                if (millis() - capturedTime < 500) {
-                    eventBuffer.push(Event::InitLed);
-                } else {
-
-                    it.blueOff();
                 }
                 break;
             default:

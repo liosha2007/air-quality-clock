@@ -5,9 +5,7 @@
 
 namespace bme280 {
 
-    enum : uint8_t {
-        DrawStage = 1, TryInit
-    } nextState = DrawStage;
+    static State nextState = State::Draw;
 
     static uint32_t capturedTime = 0;
     static uint8_t tryInitCount = 1;
@@ -21,17 +19,17 @@ namespace bme280 {
     void init(void (*finishCallback)()) {
         Serial.print("..");
         switch (nextState) {
-            case DrawStage:
+            case State::Draw:
                 Serial.println("DrawStage");
 
                 st7735::it.setCursor(BME280_INIT_CURSOR_X, BME280_INIT_CURSOR_Y);
                 printTextOnDisplay("BME280...");
 
                 capturedTime = millis();
-                nextState = TryInit;
+                nextState = State::Init;
                 eventBuffer.push(Event::InitBME280);
                 break;
-            case TryInit:
+            case State::Init:
                 Serial.println("TryInit");
                 if (millis() - capturedTime < tryInitCount * 100) { // Pause 100..200..300..
                     eventBuffer.push(Event::InitBME280);
@@ -44,8 +42,8 @@ namespace bme280 {
                     it.parameter.tempOversampling = 0b100;              //Temperature Oversampling
                     it.parameter.pressOversampling = 0b100;             //Pressure Oversampling
                     it.parameter.pressureSeaLevel = 1013;
-                    it.parameter.tempOutsideCelsius = 15;
-                    it.parameter.tempOutsideFahrenheit = 59;
+                    it.parameter.tempOutsideCelsius = 15; // Default 15
+//                    it.parameter.tempOutsideFahrenheit = 59;
 
                     if (it.init() == 0x60) {
                         printTextOnDisplay(" OK");

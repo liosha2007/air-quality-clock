@@ -5,22 +5,12 @@
 
 namespace battery {
 
-    enum : uint8_t {
-        Init = 1
-    } nextState = Init;
-
     void init(void (*finishCallback)()) {
         Serial.print("..");
-        switch (nextState) {
-            case Init:
-                Serial.println("Init");
+        Serial.println("Init");
 
-                it.init(PIN_BUTTERY_LEVEL);
+        it.init(PIN_BUTTERY_LEVEL);
 
-                break;
-            default:
-                Serial.println("__UNKNOWN__");
-                break;
-        }
+        finishCallback();
     }
 }

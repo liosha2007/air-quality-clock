@@ -23,10 +23,9 @@ void dispatchEvent(Event event) {
 //            beep_init::clean();
             break;
         case Event::InitBattery:
-//            Serial.println("InitBattery");
-//            battery::init([]() {
-            battery::it.init(PIN_BUTTERY_LEVEL);
-//            });
+            Serial.println("InitBattery");
+            battery::init([]() {
+            });
             break;
         case Event::CleanScreen:
             Serial.println("CleanArea");
@@ -64,7 +63,7 @@ void dispatchEvent(Event event) {
 
                 eventBuffer.push(Event::DrawBattery);
                 eventBuffer.push(Event::DrawDateTime);
-//                eventBuffer.push(Event::DrawMHZ19);
+                eventBuffer.push(Event::DrawMHZ19);
                 eventBuffer.push(Event::DrawBME280);
 //                eventBuffer.push(Event::DrawMP503);
 //                eventBuffer.push(Event::DrawCCS811);
@@ -78,10 +77,10 @@ void dispatchEvent(Event event) {
             Serial.println("DrawDateTime");
             ds3231::draw();
             break;
-//        case Event::DrawMHZ19:
-//            Serial.println("DrawMHZ19");
-//            mhz19::draw();
-//            break;
+        case Event::DrawMHZ19:
+            Serial.println("DrawMHZ19");
+            mhz19::draw();
+            break;
         case Event::DrawBME280:
             Serial.println("DrawBME280");
             bme280::draw();

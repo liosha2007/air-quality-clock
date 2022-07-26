@@ -6,22 +6,20 @@
 
 namespace ccs811 {
 
-    enum : uint8_t {
-        Measure = 1, Draw, Wait
-    } nextState = Measure;
+    static State nextState = State::Measure;
 
     static uint32_t capturedTime = 0;
 
     void draw() {
         Serial.print("..");
         switch (nextState) {
-            case Measure:
+            case State::Measure:
                 if (it.start(CCS811_MODE_60SEC)) {
-                    nextState = Draw;
+                    nextState = State::Draw;
                 }
                 eventBuffer.push(Event::DrawCCS811);
                 break;
-            case Draw: {
+            case State::Draw: {
                 Serial.println("Draw");
 
                 uint16_t eco2, etvoc, errstat, raw;
@@ -40,16 +38,16 @@ namespace ccs811 {
 //                }
 
                 capturedTime = millis();
-                nextState = Wait;
+                nextState = State::Delay;
                 eventBuffer.push(Event::DrawCCS811);
                 break;
             }
-            case Wait: {
+            case State::Delay: {
                 Serial.println("Wait");
                 if (millis() - capturedTime < CCS811_DRAW_DELAY_MS) {
                     eventBuffer.push(Event::DrawCCS811);
                 } else {
-                    nextState = Measure;
+                    nextState = State::Measure;
                     eventBuffer.push(Event::DrawCCS811);
                 }
                 break;

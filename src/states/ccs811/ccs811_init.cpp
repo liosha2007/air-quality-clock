@@ -6,9 +6,7 @@
 
 namespace ccs811 {
 
-    enum : uint8_t {
-        DrawStage = 1, TryInit
-    } nextState = DrawStage;
+    static State nextState = State::Draw;
 
     static uint32_t capturedTime = 0;
     static uint8_t tryInitCount = 1;
@@ -22,17 +20,17 @@ namespace ccs811 {
     void init(void (*finishCallback)()) {
         Serial.print("..");
         switch (nextState) {
-            case DrawStage:
+            case State::Draw:
                 Serial.println("DrawStage");
 
                 st7735::it.setCursor(CCS811_INIT_CURSOR_X, CCS811_INIT_CURSOR_Y);
                 printTextOnDisplay("CCS811...");
 
                 capturedTime = millis();
-                nextState = TryInit;
+                nextState = State::Init;
                 eventBuffer.push(Event::InitCCS811);
                 break;
-            case TryInit:
+            case State::Init:
                 Serial.println("TryInit");
                 if (millis() - capturedTime < tryInitCount * 100) { // Pause 100..200..300..
                     eventBuffer.push(Event::InitCCS811);

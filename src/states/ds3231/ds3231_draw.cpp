@@ -5,11 +5,7 @@
 #include "states/ds3231/ds3231_draw.h"
 
 namespace ds3231 {
-
-    enum : uint8_t {
-        CleanArea = 1, DrawDots, Draw, Wait
-    } nextState = CleanArea;
-
+    static State nextState = State::PreDraw;
     static uint32_t capturedTime = 0;
     static bool isShowDots = false;
     static char dateString[11] = {0};
@@ -18,7 +14,7 @@ namespace ds3231 {
     void draw() {
         Serial.print("..");
         switch (nextState) {
-            case CleanArea:
+            case State::PreDraw:
                 Serial.println("CleanArea");
 
                 // Clean date
@@ -33,19 +29,19 @@ namespace ds3231 {
                 st7735::it.setTextColor(SCREEN_BACKGROUND);
                 st7735::it.println(timeString);
 
-                nextState = Draw;
+                nextState = State::Draw;
                 eventBuffer.push(Event::DrawDateTime);
                 break;
-            case DrawDots:
-                Serial.println("DrawDots");
-
-//                st7735.drawDateTimeSeparator(isShowDots);
-                isShowDots = !isShowDots;
-
-                nextState = Wait;
-                eventBuffer.push(Event::DrawDateTime);
-                break;
-            case Draw: {
+//            case DrawDots:
+//                Serial.println("DrawDots");
+//
+////                st7735.drawDateTimeSeparator(isShowDots);
+//                isShowDots = !isShowDots;
+//
+//                nextState = Wait;
+//                eventBuffer.push(Event::DrawDateTime);
+//                break;
+            case State::Draw: {
                 Serial.println("Draw");
 
                 bool century = false;
@@ -80,17 +76,17 @@ namespace ds3231 {
                 st7735::it.println(timeString);
 
                 capturedTime = millis();
-                nextState = Wait;
+                nextState = State::Delay;
                 eventBuffer.push(Event::DrawDateTime);
                 break;
             }
-            case Wait: {
+            case State::Delay: {
                 Serial.println("Wait");
                 uint32_t ms = millis();
                 if (ms - capturedTime < DS3231_DRAW_DELAY_MS) {
                     eventBuffer.push(Event::DrawDateTime);
                 } else {
-                    nextState = CleanArea;
+                    nextState = State::PreDraw;
                     eventBuffer.push(Event::DrawDateTime);
                 }
                 break;

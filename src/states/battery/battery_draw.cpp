@@ -6,9 +6,7 @@
 
 namespace battery {
 
-    enum : uint8_t {
-        CleanArea = 1, Draw, Wait
-    } nextState = Draw;
+    static State nextState = State::Draw;
 
     static uint32_t capturedTime = 0;
     static char batteryString[8] = {0};
@@ -16,7 +14,7 @@ namespace battery {
     void draw() {
         Serial.print("..");
         switch (nextState) {
-            case CleanArea:
+            case State::PreDraw:
                 Serial.println("CleanArea");
 
                 st7735::it.setTextSize(1);
@@ -24,10 +22,10 @@ namespace battery {
                 st7735::it.setCursor(BATTERY_DRAW_X, BATTERY_DRAW_Y);
                 st7735::it.println(batteryString);
 
-                nextState = Draw;
+                nextState = State::Draw;
                 eventBuffer.push(Event::DrawBattery);
                 break;
-            case Draw: {
+            case State::Draw: {
                 Serial.println("Draw");
 
 
@@ -42,12 +40,12 @@ namespace battery {
 
                 break;
             }
-            case Wait: {
+            case State::Delay: {
                 Serial.println("Wait");
                 if (millis() - capturedTime < BATTERY_DRAW_DELAY_MS) {
                     eventBuffer.push(Event::DrawBattery);
                 } else {
-                    nextState = CleanArea;
+                    nextState = State::PreDraw;
                     eventBuffer.push(Event::DrawBattery);
                 }
                 break;

@@ -6,9 +6,7 @@
 
 namespace mhz19 {
 
-    enum : uint8_t {
-        CleanArea = 1, Draw, Wait
-    } nextState = Draw;
+    static State nextState = State::Draw;
 
     static uint32_t capturedTime = 0;
     static char co2String[11] = {0};
@@ -18,7 +16,7 @@ namespace mhz19 {
     void draw() {
         Serial.print("..");
         switch (nextState) {
-            case CleanArea:
+            case State::PreDraw:
                 Serial.println("CleanArea");
 
                 // Clean date
@@ -29,37 +27,39 @@ namespace mhz19 {
                     st7735::it.println(co2String);
                 }
 
-                nextState = Draw;
+                nextState = State::Draw;
                 eventBuffer.push(Event::DrawMHZ19);
                 break;
-            case Draw: {
+            case State::Draw: {
                 Serial.println("Draw");
 
                 int16_t co2 = it.getCarbonDioxide();
                 st7735::it.setTextSize(DRAW_MHZ19_DATA_SIZE);
                 st7735::it.setTextColor(getColorDependingOnCO2(co2));
 
+                st7735::it.setCursor(DRAW_MHZ19_DRAW_DATA_X, DRAW_MHZ19_DRAW_DATA_Y);
                 if (co2 != -1) {
-                    st7735::it.setCursor(DRAW_MHZ19_DRAW_DATA_X, DRAW_MHZ19_DRAW_DATA_Y);
                     sprintf(co2String, "%02d", co2);
-                    st7735::it.println(co2String);
+                } else {
+                    sprintf(co2String, "%2s", "~");
                 }
+                st7735::it.println(co2String);
 
                 st7735::it.setTextSize(DRAW_MHZ19_LABEL_SIZE);
                 st7735::it.setCursor(DRAW_MHZ19_DRAW_LABEL_X, DRAW_MHZ19_DRAW_LABEL_Y);
                 st7735::it.println("co2");
 
                 capturedTime = millis();
-                nextState = Wait;
+                nextState = State::Delay;
                 eventBuffer.push(Event::DrawMHZ19);
                 break;
             }
-            case Wait: {
+            case State::Delay: {
                 Serial.println("Wait");
                 if (millis() - capturedTime < DRAW_MHZ19_DELAY_MS                       || !it.isReady()) {
                     eventBuffer.push(Event::DrawMHZ19);
                 } else {
-                    nextState = CleanArea;
+                    nextState = State::PreDraw;
                     eventBuffer.push(Event::DrawMHZ19);
                 }
                 break;

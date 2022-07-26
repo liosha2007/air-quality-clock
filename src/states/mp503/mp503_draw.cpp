@@ -6,16 +6,14 @@
 
 namespace mp503 {
 
-    enum : uint8_t {
-        Draw = 1, Wait
-    } nextState = Draw;
+    static State nextState = State::Draw;
 
     static uint32_t capturedTime = 0;
 
     void draw() {
         Serial.print("..");
         switch (nextState) {
-            case Draw: {
+            case State::Draw: {
                 Serial.println("Draw");
 
                 uint8_t pollution = it.readPollution();
@@ -61,16 +59,16 @@ namespace mp503 {
 
 
                 capturedTime = millis();
-                nextState = Wait;
+                nextState = State::Delay;
                 eventBuffer.push(Event::DrawMP503);
                 break;
             }
-            case Wait: {
+            case State::Delay: {
                 Serial.println("Wait");
                 if (millis() - capturedTime < DRAW_MP503_DELAY_MS) {
                     eventBuffer.push(Event::DrawMP503);
                 } else {
-                    nextState = Draw;
+                    nextState = State::Draw;
                     eventBuffer.push(Event::DrawMP503);
                 }
                 break;

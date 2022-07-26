@@ -7,9 +7,7 @@
 
 namespace mhz19 {
 
-    enum : uint8_t {
-        DrawStage = 1, TryInit
-    } nextState = DrawStage;
+    static State nextState = State::Draw;
 
     static SoftwareSerial softwareSerial(MHZ19B_TX, MHZ19B_RX);
 
@@ -22,16 +20,16 @@ namespace mhz19 {
     void init(void (*finishCallback)()) {
         Serial.print("..");
         switch (nextState) {
-            case DrawStage:
+            case State::Draw:
                 Serial.println("DrawStage");
 
                 st7735::it.setCursor(MHZ19_INIT_CURSOR_X, MHZ19_INIT_CURSOR_Y);
                 printTextOnDisplay("MHZ-19...", SCREEN_COLOR_GREEN);
 
-                nextState = TryInit;
+                nextState = State::Init;
                 eventBuffer.push(Event::InitMHZ19);
                 break;
-            case TryInit:
+            case State::Init:
                 Serial.println("TryInit");
 
                 softwareSerial.begin(MHZ19_SERIAL_SPEED);

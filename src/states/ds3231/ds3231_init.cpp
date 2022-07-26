@@ -5,9 +5,7 @@
 
 namespace ds3231 {
 
-    enum : uint8_t {
-        DrawStage = 1, TryInit
-    } nextState = DrawStage;
+    static State nextState = State::Draw;
 
 
     void printTextOnDisplay(const char *text, uint16_t textColor = SCREEN_COLOR_GREEN) {
@@ -19,16 +17,16 @@ namespace ds3231 {
     void init(void (*finishCallback)()) {
         Serial.print("..");
         switch (nextState) {
-            case DrawStage:
+            case State::Draw:
                 Serial.println("DrawStage");
 
                 st7735::it.setCursor(DS3231_INIT_CURSOR_X, DS3231_INIT_CURSOR_Y);
                 printTextOnDisplay("DS3231...");
 
-                nextState = TryInit;
+                nextState = State::Init;
                 eventBuffer.push(Event::InitDS3231);
                 break;
-            case TryInit:
+            case State::Init:
                 Serial.println("TryInit");
 
                 Wire.begin();

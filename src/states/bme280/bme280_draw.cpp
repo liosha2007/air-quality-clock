@@ -6,9 +6,7 @@
 
 namespace bme280 {
 
-    enum : uint8_t {
-        CleanArea = 1, Draw, Wait
-    } nextState = Draw;
+    static State nextState = State::Draw;
 
     static uint32_t capturedTime = 0;
     static char temperatureString[8] = {0};
@@ -17,7 +15,7 @@ namespace bme280 {
     void draw() {
         Serial.print("..");
         switch (nextState) {
-            case CleanArea:
+            case State::PreDraw:
                 Serial.println("CleanArea");
 
                 // Clean temperature
@@ -36,15 +34,15 @@ namespace bme280 {
                 st7735::it.drawRect(DRAW_BME280_DRAW_HUMIDITY_DATA_X, DRAW_BME280_DRAW_HUMIDITY_DATA_Y,
                                     DRAW_BME280_DRAW_HUMIDITY_DATA_W, DRAW_BME280_DRAW_HUMIDITY_DATA_H, ST7735_WHITE);
 
-                nextState = Draw;
+                nextState = State::Draw;
                 eventBuffer.push(Event::DrawBME280);
                 break;
-            case Draw: {
+            case State::Draw: {
                 Serial.println("Draw");
 
 //                it.takeForcedMeasurement();
                 // region temperature
-                float temperature = it.readTempC();
+                float temperature = it.readTempC() + DRAW_BME280_REMPERATURE_CORRECTION;
                 st7735::it.setTextSize(DRAW_BME280_DATA_SIZE);
                 st7735::it.setTextColor(getColorDependingOnTemperature(temperature));
 
@@ -93,16 +91,16 @@ namespace bme280 {
                 Serial.println(humidity);
 
                 capturedTime = millis();
-                nextState = Wait;
+                nextState = State::Delay;
                 eventBuffer.push(Event::DrawBME280);
                 break;
             }
-            case Wait: {
+            case State::Delay: {
                 Serial.println("Wait");
                 if (millis() - capturedTime < DRAW_BME280_DELAY_MS) {
                     eventBuffer.push(Event::DrawBME280);
                 } else {
-                    nextState = CleanArea;
+                    nextState = State::PreDraw;
                     eventBuffer.push(Event::DrawBME280);
                 }
                 break;

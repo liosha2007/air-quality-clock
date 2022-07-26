@@ -34,9 +34,9 @@
 #define JOYSTICK_2 2
 #define JOYSTICK_3 6
 
-#define LED_RED 5 // Not connected???
-#define LED_GREEN 9 // Not connected???
-#define LED_BLUE 10
+#define LED_RED 10
+#define LED_GREEN 9
+#define LED_BLUE 5
 
 #define PIN_BUTTERY_LEVEL A7
 
