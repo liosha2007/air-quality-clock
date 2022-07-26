@@ -10,7 +10,7 @@
 #define BUTTERY_MIN 1
 #define BUTTERY_MAX 160
 #define BUTTERY_MIN_RAW 1
-#define BUTTERY_MAX_RAW 250
+#define BUTTERY_MAX_RAW 935
 
 class Battery {
 public:

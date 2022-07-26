@@ -1,0 +1,18 @@
+//
+// Created by liosha on 21.07.2022.
+//
+
+#ifndef AIR_QUALITY_CLOCK_CCS811_DRAW_H
+#define AIR_QUALITY_CLOCK_CCS811_DRAW_H
+
+#include "globals.h"
+#include "Common.h"
+#include "EventSystem.h"
+
+#define CCS811_DRAW_DELAY_MS 60000
+
+namespace ccs811 {
+    void draw();
+}
+
+#endif //AIR_QUALITY_CLOCK_CCS811_DRAW_H

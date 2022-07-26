@@ -9,6 +9,6 @@
 #include <stdint-gcc.h>
 #include "globals.h"
 #include "EventSystem.h"
-#include "states/screen_init.h"
+#include "states/st7735/st7735_init.h"
 
 #endif //AIR_QUALITY_CLOCK_MAIN_H

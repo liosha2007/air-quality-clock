@@ -7,7 +7,7 @@
 
 // SEN-CCS811 Air 1.8-3.6v (30mA)
 
-// 1.8 128x160 rgb tft lcd 3.3v
+// 1.8 128x160 rgb _tft lcd 3.3v
 
 // SCK is fixed - D13
 // SDA is fixed - D11

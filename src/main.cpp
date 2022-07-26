@@ -26,20 +26,20 @@
 
 //void aqc_init_clock() {
 //    // region Time
-//    screen.drawProgress(LoadingProgress::STAGE_3);
+//    st7735.drawProgress(LoadingProgress::STAGE_3);
 //    delay(50);
-//    if (time.init(3, drawDotOnScreen)) {
-//        screen.drawProgressOk();
+//    if (time.clean(3, drawDotOnScreen)) {
+//        st7735.drawProgressOk();
 //    } else {
-//        screen.drawProgressFail();
+//        st7735.drawProgressFail();
 //        delay(500);
 //    }
 //    // endregion
 //}
 
 //void aqc_init_screen() {
-//    screen.init();
-//    screen.drawLogo();
+//    st7735.clean();
+//    st7735.drawLogo();
 //
 //    nextState = State::InitDS3231;
 //}

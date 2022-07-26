@@ -2,9 +2,9 @@
 // Created by liosha on 20.07.2022.
 //
 
-#include "states/ccs811/ccs811_init.h"
+#include "states/mp503/mp503_init.h"
 
-namespace ccs811 {
+namespace mp503 {
 
     enum : uint8_t {
         DrawStage = 1, TryInit
@@ -14,7 +14,7 @@ namespace ccs811 {
     static uint8_t tryInitCount = 1;
 
     void printTextOnDisplay(const char *text, uint16_t textColor = SCREEN_COLOR_GREEN) {
-        st7735::it.setTextSize(CCS811_INIT_TEXT_SIZE);
+        st7735::it.setTextSize(MP503_INIT_TEXT_SIZE);
         st7735::it.setTextColor(textColor);
         st7735::it.print(text);
     }
@@ -23,37 +23,30 @@ namespace ccs811 {
         Serial.print("..");
         switch (nextState) {
             case DrawStage:
-                Serial.println("DrawStage");
 
-                st7735::it.setCursor(CCS811_INIT_CURSOR_X, CCS811_INIT_CURSOR_Y);
-                printTextOnDisplay("CCS811...");
+                st7735::it.setCursor(MP503_INIT_CURSOR_X, MP503_INIT_CURSOR_Y);
+                printTextOnDisplay("MP503...");
 
                 capturedTime = millis();
                 nextState = TryInit;
-                eventBuffer.push(Event::InitCCS811);
+                eventBuffer.push(Event::InitMP503);
                 break;
             case TryInit:
                 Serial.println("TryInit");
                 if (millis() - capturedTime < tryInitCount * 100) { // Pause 100..200..300..
-                    eventBuffer.push(Event::InitCCS811);
+                    eventBuffer.push(Event::InitMP503);
                 } else {
-                    // Wire.begin()
-                    if (it.begin()) {
-                        // Print CCS811 versions
-                        Serial.print("CCS811: hardware    version: "); Serial.println(it.hardware_version(),HEX);
-                        Serial.print("CCS811: bootloader  version: "); Serial.println(it.bootloader_version(),HEX);
-                        Serial.print("CCS811: application version: "); Serial.println(it.application_version(),HEX);
-
+                    if (it.init(MP503_A, MP503_B)) {
                         printTextOnDisplay(" OK");
                         finishCallback();
-                    } else if (tryInitCount == CCS811_INIT_MAX_TRY_COUNT) {
+                    } else if (tryInitCount == SCREEN_MP503_INIT_MAX_TRY_COUNT) {
                         printTextOnDisplay(" FAIL", SCREEN_COLOR_RED);
                         finishCallback();
                     } else {
                         printTextOnDisplay(".");
                         tryInitCount++;
                         capturedTime = millis();
-                        eventBuffer.push(Event::InitCCS811);
+                        eventBuffer.push(Event::InitMP503);
                     }
                 }
                 break;

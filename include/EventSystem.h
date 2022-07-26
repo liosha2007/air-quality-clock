@@ -8,24 +8,24 @@
 #include <stdint-gcc.h>
 
 #include "CycleBuffer.h"
-#include "states/led_init.h"
-#include "states/screen_init.h"
-#include "states/battery_init.h"
-#include "states/mhz19_init.h"
-#include "states/bme280_init.h"
-#include "states/ds3231_init.h"
-#include "states/mp503_init.h"
-#include "states/ccs811_init.h"
-#include "states/ds3231_drawdatetime.h"
-#include "states/mhz19_draw.h"
-#include "states/bme280_draw.h"
-#include "states/mp503_draw.h"
-#include "states/ccs811_draw.h"
+
+#include "states/led/led_init.h"
+#include "states/st7735/st7735_init.h"
+#include "states/st7735/st7735_clean.h"
+#include "states/battery/battery_init.h"
+#include "states/battery/battery_draw.h"
+#include "states/mhz19/mhz19_init.h"
+#include "states/bme280/bme280_init.h"
+#include "states/ds3231/ds3231_init.h"
+#include "states/mp503/mp503_init.h"
+#include "states/ccs811/ccs811_init.h"
+#include "states/ds3231/ds3231_draw.h"
+#include "states/mhz19/mhz19_draw.h"
+#include "states/bme280/bme280_draw.h"
+#include "states/mp503/mp503_draw.h"
+#include "states/ccs811/ccs811_draw.h"
 
 #define EVENT_BUFFER_SIZE 8
-
-void idleStateCallback();
-
 
 void dispatchEvent(Event event);
 

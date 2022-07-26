@@ -8,18 +8,20 @@
 #include <stdint-gcc.h>
 
 enum class Event : uint8_t {
-    InitLed = 1, InitBeep, InitBattery,
+    InitLed = 1, InitBeep,
     InitScreen,
-    InitMHZ19,
-    InitBME280,
-    InitDS3231,
-    InitMP503,
-    InitCCS811,
-    DrawDateTime,
-    DrawMHZ19,
-    DrawBME280,
-    DrawMP503,
-    DrawCCS811
+    InitBattery, DrawBattery,
+    CleanScreen,
+    InitMHZ19,    DrawMHZ19,
+    InitBME280,    DrawBME280,
+    InitDS3231,    DrawDateTime,
+    InitMP503,    DrawMP503,
+    InitCCS811,    DrawCCS811
+
+
+
+
+
 };
 
 const char *eventToString(Event event);
