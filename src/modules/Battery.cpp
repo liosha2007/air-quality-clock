@@ -5,7 +5,7 @@
 #include <Arduino.h>
 #include "modules/Battery.h"
 
-Battery::Battery() : _pin(0), _level(0) {
+Battery::Battery() : _pin(0) {
 }
 
 void Battery::init(uint8_t pin) {
@@ -13,18 +13,13 @@ void Battery::init(uint8_t pin) {
     pinMode(_pin, INPUT);
 }
 
-uint8_t Battery::readLevel() {
-    if (_level == 0 /* Initial load */) {
-        _level = analogRead(_pin);
+uint8_t Battery::readLevel(uint8_t min, uint8_t max) const {
+    int16_t rawLevel = analogRead(_pin);
+    uint8_t level = map(rawLevel, BUTTERY_MIN_RAW, BUTTERY_MAX_RAW, min, max);
 
-        Serial.print("BUTTERY value (0-160) = ");
-        Serial.print(displayableLevel(_level));
-        Serial.print(", raw = ");
-        Serial.println(_level);
-    }
-    return displayableLevel(_level);
-}
-
-uint8_t Battery::displayableLevel(int16_t level) {
-    return map(level, BUTTERY_MIN_RAW, BUTTERY_MAX_RAW, BUTTERY_MIN, BUTTERY_MAX);
+    Serial.print("BUTTERY value (0-160) = ");
+    Serial.print(level);
+    Serial.print(", raw = ");
+    Serial.println(rawLevel);
+    return level;
 }

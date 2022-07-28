@@ -36,12 +36,12 @@ namespace bme280 {
                 } else {
                     it.parameter.communication = 0;                    //I2C
                     it.parameter.I2CAddress = 0x76;                    //I2C Address
-                    it.parameter.sensorMode = 0b01;                    //Setup Sensor mode
-                    it.parameter.IIRfilter = 0b100;                   //IIR Filter
-                    it.parameter.humidOversampling = 0b100;            //Humidity Oversampling
-                    it.parameter.tempOversampling = 0b100;              //Temperature Oversampling
-                    it.parameter.pressOversampling = 0b100;             //Pressure Oversampling
-                    it.parameter.pressureSeaLevel = 1013;
+                    it.parameter.sensorMode = BME280_INIT_MEASURE_MODE_CONTINUALLY;         //Setup Sensor mode
+                    it.parameter.IIRfilter = BME280_INIT_IIRFILTER_MODE_0;                  //IIR Filter
+                    it.parameter.humidOversampling = BME280_INIT_HUM_OVERSAMPLING_MODE_2;   //Humidity Oversampling
+                    it.parameter.tempOversampling = BME280_INIT_TMP_OVERSAMPLING_MODE_2;    //Temperature Oversampling
+                    it.parameter.pressOversampling = BME280_INIT_PRS_OVERSAMPLING_MODE_2;   //Pressure Oversampling
+                    it.parameter.pressureSeaLevel = 824; // Default 1013
                     it.parameter.tempOutsideCelsius = 15; // Default 15
 //                    it.parameter.tempOutsideFahrenheit = 59;
 

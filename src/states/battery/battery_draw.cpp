@@ -9,7 +9,6 @@ namespace battery {
     static State nextState = State::Draw;
 
     static uint32_t capturedTime = 0;
-    static char batteryString[8] = {0};
 
     void draw() {
         Serial.print("..");
@@ -17,10 +16,7 @@ namespace battery {
             case State::PreDraw:
                 Serial.println("CleanArea");
 
-                st7735::it.setTextSize(1);
-                st7735::it.setTextColor(SCREEN_BACKGROUND);
-                st7735::it.setCursor(BATTERY_DRAW_X, BATTERY_DRAW_Y);
-                st7735::it.println(batteryString);
+                st7735::it.fillRect(BATTERY_DRAW_X, BATTERY_DRAW_Y, BATTERY_DRAW_W, BATTERY_DRAW_H, SCREEN_BACKGROUND);
 
                 nextState = State::Draw;
                 eventBuffer.push(Event::DrawBattery);
@@ -28,16 +24,12 @@ namespace battery {
             case State::Draw: {
                 Serial.println("Draw");
 
+                uint8_t levelWidth = it.readLevel(1, BATTERY_DRAW_W);
+                st7735::it.fillRect(BATTERY_DRAW_X, BATTERY_DRAW_Y, levelWidth, BATTERY_DRAW_H, BATTERY_DRAW_COLOR);
 
-                uint16_t level = analogRead(A7); // raw level
-                st7735::it.setTextSize(1);
-                st7735::it.setTextColor(ST7735_RED);
-                st7735::it.setCursor(BATTERY_DRAW_X, BATTERY_DRAW_Y);
-                sprintf(batteryString, "%02d", level);
-                st7735::it.println(batteryString);
-
-
-
+                capturedTime = millis();
+                nextState = State::Delay;
+                eventBuffer.push(Event::DrawBattery);
                 break;
             }
             case State::Delay: {

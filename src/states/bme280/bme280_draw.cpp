@@ -42,7 +42,7 @@ namespace bme280 {
 
 //                it.takeForcedMeasurement();
                 // region temperature
-                float temperature = it.readTempC() + DRAW_BME280_REMPERATURE_CORRECTION;
+                float temperature = it.readTempC() + DRAW_BME280_TEMPERATURE_CORRECTION;
                 st7735::it.setTextSize(DRAW_BME280_DATA_SIZE);
                 st7735::it.setTextColor(getColorDependingOnTemperature(temperature));
 
@@ -83,12 +83,12 @@ namespace bme280 {
                 st7735::it.println("humidity");
                 // endregion
 
-                Serial.print("...temperature: ");
-                Serial.print(temperature);
-                Serial.print(", pressure: ");
-                Serial.print(pressure);
-                Serial.print(", humidity: ");
-                Serial.println(humidity);
+//                Serial.print("...temperature: ");
+//                Serial.print(temperature);
+//                Serial.print(", pressure: ");
+//                Serial.print(pressure);
+//                Serial.print(", humidity: ");
+//                Serial.println(humidity);
 
                 capturedTime = millis();
                 nextState = State::Delay;
