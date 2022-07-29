@@ -32,7 +32,7 @@ uint8_t MP503::readPollution() const {
         pollution = ERROR;
     }
 
-    Serial.print("MP503: pollution (1-4) = ");
-    Serial.println(pollution);
+//    Serial.print("MP503: pollution (1-4) = ");
+//    Serial.println(pollution);
     return pollution;
 }

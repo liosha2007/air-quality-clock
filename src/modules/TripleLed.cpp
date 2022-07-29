@@ -28,10 +28,10 @@ void TripleLed::toggle() {
         analogWrite(_redPin, 0);
         analogWrite(_greenPin, 0);
         analogWrite(_bluePin, 0);
-        Serial.println("TripleLed was disabled");
+//        Serial.println("TripleLed was disabled");
     } else {
         _ledEnabled = true;
-        Serial.println("TripleLed was enabled");
+//        Serial.println("TripleLed was enabled");
     }
 }
 

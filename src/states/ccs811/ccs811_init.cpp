@@ -18,10 +18,10 @@ namespace ccs811 {
     }
 
     void init(void (*finishCallback)()) {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::Draw:
-                Serial.println("DrawStage");
+                IF_DEBUG(Serial.println("DrawStage");)
 
                 st7735::it.setCursor(CCS811_INIT_CURSOR_X, CCS811_INIT_CURSOR_Y);
                 printTextOnDisplay("CCS811...");
@@ -31,16 +31,16 @@ namespace ccs811 {
                 eventBuffer.push(Event::InitCCS811);
                 break;
             case State::Init:
-                Serial.println("TryInit");
+                IF_DEBUG(Serial.println("TryInit");)
                 if (millis() - capturedTime < tryInitCount * 100) { // Pause 100..200..300..
                     eventBuffer.push(Event::InitCCS811);
                 } else {
                     // Wire.begin()
                     if (it.begin()) {
                         // Print CCS811 versions
-                        Serial.print("CCS811: hardware    version: "); Serial.println(it.hardware_version(),HEX);
-                        Serial.print("CCS811: bootloader  version: "); Serial.println(it.bootloader_version(),HEX);
-                        Serial.print("CCS811: application version: "); Serial.println(it.application_version(),HEX);
+                        IF_DEBUG(Serial.print("CCS811: hardware    version: ");) IF_DEBUG(Serial.println(it.hardware_version(),HEX);)
+                        IF_DEBUG(Serial.print("CCS811: bootloader  version: ");) IF_DEBUG(Serial.println(it.bootloader_version(),HEX);)
+                        IF_DEBUG(Serial.print("CCS811: application version: ");) IF_DEBUG(Serial.println(it.application_version(),HEX);)
 
                         printTextOnDisplay(" OK");
                         finishCallback();
@@ -56,7 +56,7 @@ namespace ccs811 {
                 }
                 break;
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 finishCallback();
                 break;
         }

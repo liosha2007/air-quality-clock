@@ -15,10 +15,10 @@ namespace ds3231 {
     }
 
     void init(void (*finishCallback)()) {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::Draw:
-                Serial.println("DrawStage");
+                IF_DEBUG(Serial.println("DrawStage");)
 
                 st7735::it.setCursor(DS3231_INIT_CURSOR_X, DS3231_INIT_CURSOR_Y);
                 printTextOnDisplay("DS3231...");
@@ -27,7 +27,7 @@ namespace ds3231 {
                 eventBuffer.push(Event::InitDS3231);
                 break;
             case State::Init:
-                Serial.println("TryInit");
+                IF_DEBUG(Serial.println("TryInit");)
 
                 Wire.begin();
                 printTextOnDisplay(" OK");
@@ -36,7 +36,7 @@ namespace ds3231 {
                 break;
 
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 finishCallback();
                 break;
         }

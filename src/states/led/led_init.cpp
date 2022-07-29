@@ -13,10 +13,10 @@ namespace led {
     static uint32_t capturedTime = 0;
 
     void init() {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::Init:
-                Serial.println("Init");
+                IF_DEBUG(Serial.println("Init");)
 
                 it.initialize(LED_RED, LED_GREEN, LED_BLUE);
                 it.allOff();
@@ -25,7 +25,7 @@ namespace led {
                 eventBuffer.push(Event::InitLed);
                 break;
             case State::Draw: {
-                Serial.println("Draw");
+                IF_DEBUG(Serial.println("Draw");)
 
                 switch (ledColor) {
                     case Red:
@@ -53,7 +53,7 @@ namespace led {
                 break;
             }
             case State::Delay:
-                Serial.println("Delay");
+                IF_DEBUG(Serial.println("Delay");)
                 if (millis() - capturedTime < 500) {
                     eventBuffer.push(Event::InitLed);
                 } else {
@@ -62,7 +62,7 @@ namespace led {
                 }
                 break;
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 break;
         }
     }

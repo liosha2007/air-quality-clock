@@ -13,10 +13,10 @@ namespace bme280 {
     static char pressureString[8] = {0};
 
     void draw() {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::PreDraw:
-                Serial.println("CleanArea");
+                IF_DEBUG(Serial.println("CleanArea");)
 
                 // Clean temperature
                 st7735::it.setCursor(DRAW_BME280_DRAW_TEMPERATURE_DATA_X, DRAW_BME280_DRAW_TEMPERATURE_DATA_Y);
@@ -31,21 +31,26 @@ namespace bme280 {
                 st7735::it.println(pressureString);
 
                 // Clean humidity
-                st7735::it.drawRect(DRAW_BME280_DRAW_HUMIDITY_DATA_X, DRAW_BME280_DRAW_HUMIDITY_DATA_Y,
-                                    DRAW_BME280_DRAW_HUMIDITY_DATA_W, DRAW_BME280_DRAW_HUMIDITY_DATA_H, ST7735_WHITE);
+                st7735::it.fillRect(DRAW_BME280_DRAW_HUMIDITY_DATA_X, DRAW_BME280_DRAW_HUMIDITY_DATA_Y,
+                                    DRAW_BME280_DRAW_HUMIDITY_DATA_W, DRAW_BME280_DRAW_HUMIDITY_DATA_H,
+                                    SCREEN_BACKGROUND);
+//                if (capturedTime == 0) { // Only once
+                    st7735::it.drawRect(DRAW_BME280_DRAW_HUMIDITY_DATA_X, DRAW_BME280_DRAW_HUMIDITY_DATA_Y,
+                                        DRAW_BME280_DRAW_HUMIDITY_DATA_W, DRAW_BME280_DRAW_HUMIDITY_DATA_H,
+                                        ST7735_WHITE);
+//                }
 
                 nextState = State::Draw;
                 eventBuffer.push(Event::DrawBME280);
                 break;
             case State::Draw: {
-                Serial.println("Draw");
+                IF_DEBUG(Serial.println("Draw");)
 
-//                it.takeForcedMeasurement();
                 // region temperature
                 float temperature = it.readTempC() + DRAW_BME280_TEMPERATURE_CORRECTION;
-                st7735::it.setTextSize(DRAW_BME280_DATA_SIZE);
                 st7735::it.setTextColor(getColorDependingOnTemperature(temperature));
 
+                st7735::it.setTextSize(DRAW_BME280_DATA_SIZE);
                 st7735::it.setCursor(DRAW_BME280_DRAW_TEMPERATURE_DATA_X, DRAW_BME280_DRAW_TEMPERATURE_DATA_Y);
                 sprintf(temperatureString, "%u", (int8_t) temperature);
                 st7735::it.println(temperatureString);
@@ -56,10 +61,10 @@ namespace bme280 {
                 // endregion
 
                 // region pressure
-                float pressure = it.readPressure();
-                st7735::it.setTextSize(DRAW_BME280_DATA_SIZE);
+                float pressure = it.readPressure() / 1.332; // Converting to mm
                 st7735::it.setTextColor(getColorDependingOnPressure(pressure));
 
+                st7735::it.setTextSize(DRAW_BME280_DATA_SIZE);
                 st7735::it.setCursor(DRAW_BME280_DRAW_PRESSURE_DATA_X, DRAW_BME280_DRAW_PRESSURE_DATA_Y);
                 sprintf(pressureString, "%u", (uint16_t) pressure);
                 st7735::it.println(pressureString);
@@ -73,22 +78,23 @@ namespace bme280 {
                 float humidity = it.readHumidity();
 
                 uint8_t width = map((long) humidity, 1, 100, DRAW_BME280_DRAW_HUMIDITY_DATA_W / 4,
-                                    DRAW_BME280_DRAW_HUMIDITY_DATA_W - 2);
-                st7735::it.fillRect(DRAW_BME280_DRAW_HUMIDITY_DATA_X + 1, DRAW_BME280_DRAW_HUMIDITY_DATA_Y + 1, width,
-                                    DRAW_BME280_DRAW_HUMIDITY_DATA_H - 2,
-                                    getColorDependingOnHumidity((int8_t) humidity));
+                                    DRAW_BME280_DRAW_HUMIDITY_DATA_W);
+                uint16_t color = getColorDependingOnHumidity((int8_t) humidity);
+                st7735::it.fillRect(DRAW_BME280_DRAW_HUMIDITY_DATA_X + 1, DRAW_BME280_DRAW_HUMIDITY_DATA_Y + 1,
+                                    width - 2, DRAW_BME280_DRAW_HUMIDITY_DATA_H - 2, color);
 
+                st7735::it.setTextColor(color);
                 st7735::it.setTextSize(DRAW_BME280_LABEL_SIZE);
                 st7735::it.setCursor(DRAW_BME280_DRAW_HUMIDITY_LABEL_X, DRAW_BME280_DRAW_HUMIDITY_LABEL_Y);
                 st7735::it.println("humidity");
                 // endregion
 
-//                Serial.print("...temperature: ");
-//                Serial.print(temperature);
-//                Serial.print(", pressure: ");
-//                Serial.print(pressure);
-//                Serial.print(", humidity: ");
-//                Serial.println(humidity);
+                IF_DEBUG(Serial.print("...temperature: ");)
+                IF_DEBUG(Serial.print(temperature);)
+                IF_DEBUG(Serial.print(", pressure: ");)
+                IF_DEBUG(Serial.print(pressure);)
+                IF_DEBUG(Serial.print(", humidity: ");)
+                IF_DEBUG(Serial.println(humidity);)
 
                 capturedTime = millis();
                 nextState = State::Delay;
@@ -96,7 +102,7 @@ namespace bme280 {
                 break;
             }
             case State::Delay: {
-                Serial.println("Wait");
+                IF_DEBUG(Serial.println("Wait");)
                 if (millis() - capturedTime < DRAW_BME280_DELAY_MS) {
                     eventBuffer.push(Event::DrawBME280);
                 } else {
@@ -106,7 +112,7 @@ namespace bme280 {
                 break;
             }
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 break;
         }
     }

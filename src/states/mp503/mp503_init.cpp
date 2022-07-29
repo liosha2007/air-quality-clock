@@ -18,7 +18,7 @@ namespace mp503 {
     }
 
     void init(void (*finishCallback)()) {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::Draw:
 
@@ -30,7 +30,7 @@ namespace mp503 {
                 eventBuffer.push(Event::InitMP503);
                 break;
             case State::Init:
-                Serial.println("TryInit");
+                IF_DEBUG(Serial.println("TryInit");)
                 if (millis() - capturedTime < tryInitCount * 100) { // Pause 100..200..300..
                     eventBuffer.push(Event::InitMP503);
                 } else {
@@ -49,7 +49,7 @@ namespace mp503 {
                 }
                 break;
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 finishCallback();
                 break;
         }

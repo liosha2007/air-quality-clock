@@ -12,10 +12,10 @@ namespace ds3231 {
     static char timeString[6] = {0};
 
     void draw() {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::PreDraw:
-                Serial.println("CleanArea");
+                IF_DEBUG(Serial.println("CleanArea");)
 
                 // Clean date
                 st7735::it.setCursor(DS3231_DRAW_DATE_X, DS3231_DRAW_DATE_Y);
@@ -42,7 +42,7 @@ namespace ds3231 {
 //                eventBuffer.push(Event::DrawDateTime);
 //                break;
             case State::Draw: {
-                Serial.println("Draw");
+                IF_DEBUG(Serial.println("Draw");)
 
                 bool century = false;
                 bool h12Flag = false;
@@ -81,7 +81,7 @@ namespace ds3231 {
                 break;
             }
             case State::Delay: {
-                Serial.println("Wait");
+                IF_DEBUG(Serial.println("Wait");)
                 uint32_t ms = millis();
                 if (ms - capturedTime < DS3231_DRAW_DELAY_MS) {
                     eventBuffer.push(Event::DrawDateTime);
@@ -92,7 +92,7 @@ namespace ds3231 {
                 break;
             }
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 break;
         }
     }

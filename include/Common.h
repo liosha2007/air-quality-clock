@@ -7,6 +7,9 @@
 
 #include <stdint-gcc.h>
 
+#define IS_DEBUG 0
+#define IF_DEBUG(XXX) if (IS_DEBUG) XXX
+
 enum class Event : uint8_t {
     InitLed = 1,
     InitScreen,

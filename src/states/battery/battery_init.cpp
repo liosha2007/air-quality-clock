@@ -6,8 +6,8 @@
 namespace battery {
 
     void init(void (*finishCallback)()) {
-        Serial.print("..");
-        Serial.println("Init");
+        IF_DEBUG(Serial.print("..");)
+        IF_DEBUG(Serial.println("Init");)
 
         it.init(PIN_BUTTERY_LEVEL);
 

@@ -14,10 +14,10 @@ namespace mhz19 {
     uint16_t getColorDependingOnCO2(int16_t value);
 
     void draw() {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::PreDraw:
-                Serial.println("CleanArea");
+                IF_DEBUG(Serial.println("CleanArea");)
 
                 // Clean date
                 if (co2String[0] != 0) {
@@ -31,7 +31,7 @@ namespace mhz19 {
                 eventBuffer.push(Event::DrawMHZ19);
                 break;
             case State::Draw: {
-                Serial.println("Draw");
+                IF_DEBUG(Serial.println("Draw");)
 
                 int16_t co2 = it.getCarbonDioxide();
                 st7735::it.setTextSize(DRAW_MHZ19_DATA_SIZE);
@@ -55,7 +55,7 @@ namespace mhz19 {
                 break;
             }
             case State::Delay: {
-                Serial.println("Wait");
+                IF_DEBUG(Serial.println("Wait");)
                 if (millis() - capturedTime < DRAW_MHZ19_DELAY_MS                       || !it.isReady()) {
                     eventBuffer.push(Event::DrawMHZ19);
                 } else {
@@ -65,7 +65,7 @@ namespace mhz19 {
                 break;
             }
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 break;
         }
     }

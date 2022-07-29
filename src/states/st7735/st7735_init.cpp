@@ -10,10 +10,10 @@ namespace st7735 {
     static uint32_t capturedTime = 0;
 
     void init(void (*finishCallback)()) {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::Init:
-                Serial.println("Init");
+                IF_DEBUG(Serial.println("Init");)
 
                 it.initR(INITR_BLACKTAB);
                 it.setRotation(135);
@@ -24,7 +24,7 @@ namespace st7735 {
                 eventBuffer.push(Event::InitScreen);
                 break;
             case State::Draw:
-                Serial.println("DrawLogo");
+                IF_DEBUG(Serial.println("DrawLogo");)
 
                 it.enableDisplay(true);
                 it.fillScreen(SCREEN_BACKGROUND);
@@ -41,7 +41,7 @@ namespace st7735 {
                 eventBuffer.push(Event::InitScreen);
                 break;
             case State::Delay:
-                Serial.println("KeepLogo");
+                IF_DEBUG(Serial.println("KeepLogo");)
                 if (millis() - capturedTime < 500) { // KeepLogo
                     eventBuffer.push(Event::InitScreen);
                 } else {
@@ -49,7 +49,7 @@ namespace st7735 {
                 }
                 break;
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 finishCallback();
                 break;
         }

@@ -11,7 +11,7 @@ namespace ccs811 {
     static uint32_t capturedTime = 0;
 
     void draw() {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::Measure:
                 if (it.start(CCS811_MODE_60SEC)) {
@@ -20,7 +20,7 @@ namespace ccs811 {
                 eventBuffer.push(Event::DrawCCS811);
                 break;
             case State::Draw: {
-                Serial.println("Draw");
+                IF_DEBUG(Serial.println("Draw");)
 
                 uint16_t eco2, etvoc, errstat, raw;
                 it.read(&eco2, &etvoc, &errstat, &raw);
@@ -43,7 +43,7 @@ namespace ccs811 {
                 break;
             }
             case State::Delay: {
-                Serial.println("Wait");
+                IF_DEBUG(Serial.println("Wait");)
                 if (millis() - capturedTime < CCS811_DRAW_DELAY_MS) {
                     eventBuffer.push(Event::DrawCCS811);
                 } else {
@@ -53,7 +53,7 @@ namespace ccs811 {
                 break;
             }
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 break;
         }
     }

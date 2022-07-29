@@ -17,10 +17,10 @@ namespace bme280 {
     }
 
     void init(void (*finishCallback)()) {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::Draw:
-                Serial.println("DrawStage");
+                IF_DEBUG(Serial.println("DrawStage");)
 
                 st7735::it.setCursor(BME280_INIT_CURSOR_X, BME280_INIT_CURSOR_Y);
                 printTextOnDisplay("BME280...");
@@ -30,7 +30,7 @@ namespace bme280 {
                 eventBuffer.push(Event::InitBME280);
                 break;
             case State::Init:
-                Serial.println("TryInit");
+                IF_DEBUG(Serial.println("TryInit");)
                 if (millis() - capturedTime < tryInitCount * 100) { // Pause 100..200..300..
                     eventBuffer.push(Event::InitBME280);
                 } else {
@@ -41,9 +41,8 @@ namespace bme280 {
                     it.parameter.humidOversampling = BME280_INIT_HUM_OVERSAMPLING_MODE_2;   //Humidity Oversampling
                     it.parameter.tempOversampling = BME280_INIT_TMP_OVERSAMPLING_MODE_2;    //Temperature Oversampling
                     it.parameter.pressOversampling = BME280_INIT_PRS_OVERSAMPLING_MODE_2;   //Pressure Oversampling
-                    it.parameter.pressureSeaLevel = 824; // Default 1013
-                    it.parameter.tempOutsideCelsius = 15; // Default 15
-//                    it.parameter.tempOutsideFahrenheit = 59;
+                    it.parameter.pressureSeaLevel = 998; // Tried few values until it is ok
+                    it.parameter.tempOutsideCelsius = 27;
 
                     if (it.init() == 0x60) {
                         printTextOnDisplay(" OK");
@@ -60,7 +59,7 @@ namespace bme280 {
                 }
                 break;
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 finishCallback();
                 break;
         }

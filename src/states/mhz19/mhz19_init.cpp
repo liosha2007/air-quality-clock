@@ -18,10 +18,10 @@ namespace mhz19 {
     }
 
     void init(void (*finishCallback)()) {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::Draw:
-                Serial.println("DrawStage");
+                IF_DEBUG(Serial.println("DrawStage");)
 
                 st7735::it.setCursor(MHZ19_INIT_CURSOR_X, MHZ19_INIT_CURSOR_Y);
                 printTextOnDisplay("MHZ-19...", SCREEN_COLOR_GREEN);
@@ -30,7 +30,7 @@ namespace mhz19 {
                 eventBuffer.push(Event::InitMHZ19);
                 break;
             case State::Init:
-                Serial.println("TryInit");
+                IF_DEBUG(Serial.println("TryInit");)
 
                 softwareSerial.begin(MHZ19_SERIAL_SPEED);
                 it.begin(&softwareSerial);
@@ -39,7 +39,7 @@ namespace mhz19 {
 
                 break;
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 finishCallback();
                 break;
         }

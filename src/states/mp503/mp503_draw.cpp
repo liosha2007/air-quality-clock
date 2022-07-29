@@ -11,10 +11,10 @@ namespace mp503 {
     static uint32_t capturedTime = 0;
 
     void draw() {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
         switch (nextState) {
             case State::Draw: {
-                Serial.println("Draw");
+                IF_DEBUG(Serial.println("Draw");)
 
                 uint8_t pollution = it.readPollution();
                 if (pollution == MP503::HEAVY_POLLUTION_AIR) {
@@ -64,7 +64,7 @@ namespace mp503 {
                 break;
             }
             case State::Delay: {
-                Serial.println("Wait");
+                IF_DEBUG(Serial.println("Wait");)
                 if (millis() - capturedTime < DRAW_MP503_DELAY_MS) {
                     eventBuffer.push(Event::DrawMP503);
                 } else {
@@ -74,7 +74,7 @@ namespace mp503 {
                 break;
             }
             default:
-                Serial.println("__UNKNOWN__");
+                IF_DEBUG(Serial.println("__UNKNOWN__");)
                 break;
         }
     }

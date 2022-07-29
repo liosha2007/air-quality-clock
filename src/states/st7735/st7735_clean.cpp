@@ -7,7 +7,7 @@
 namespace st7735 {
 
     void clean(void (*finishCallback)()) {
-        Serial.print("..");
+        IF_DEBUG(Serial.print("..");)
 
         it.fillScreen(SCREEN_BACKGROUND);
 
